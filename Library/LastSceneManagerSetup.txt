@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Scenes/Geom/Cap.17 PathVisualizer.unity
+  isLoaded: 1
+  isActive: 1

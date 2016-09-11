@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <RootNamespace></RootNamespace>
+    <ProjectGuid>{A0528D59-E19E-4111-54F4-50EA18525B74}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;UNITY_64;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_OSX;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_GAMECENTER;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_OSX;UNITY_TEAM_LICENSE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine">
+      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Common\Collections\Generic\AVLNode.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\AVLTree.ICollection.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\AVLTree.IEnumerable.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\AVLTree.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.ICollection.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.IEnumerable.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTreeNode.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\Colour.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\Exceptions\InvalidTreeException.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\Exceptions\ValueNotFoundException.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\Heap.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\HeapType.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\IBinarySearchTree.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\RedBlackNode.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.ICollection.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.IEnumerable.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.MyHelper.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\SkipList.ICollection.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\SkipList.IEnumerable.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\SkipList.cs" />
+     <Compile Include="Assets\Common\Collections\Generic\SkipListNode.cs" />
+     <Compile Include="Assets\Common\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\Common\Resources\Errors.Designer.cs" />
+     <Compile Include="Assets\Scripts\Common\ConvexPolygonButton.cs" />
+     <Compile Include="Assets\Scripts\Common\DraggableObject.cs" />
+     <Compile Include="Assets\Scripts\Common\TransformDetector.cs" />
+     <Compile Include="Assets\Scripts\Common\WaitedSiteObject.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.02.1\Cap2_1Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.02\Cap2Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.05\DetectorEvent.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.05\Intersection.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.05\IntersectionDetector.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.05\PlaneSweepIntersectionDetector.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.05\SweepLineBasedComparator.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.06.1\Cap6_1Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.06\Cap6Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.10.1\Cap10_1Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.10\Cap10Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.10\PolygonGameObject.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.12.1\Cap12_1Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.12.2\Cap12_2Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.12\Cap12Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.13\Cap13_Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.14\Cap14Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.15\Cap15Demo.cs" />
+     <Compile Include="Assets\Scripts\Geom\Cap.17\Cap17Demo.cs" />
+     <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
+     <Compile Include="Assets\Seiro\Scripts\EventSystems\CollisionEventSystem.cs" />
+     <Compile Include="Assets\Seiro\Scripts\EventSystems\ICollisionEventHandler.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\PseudoHalfPlaneGenerator.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagram.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagramGenerator.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiSite.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\WaitedVoronoiDiagramGenerator.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\WaitedVoronoiSite.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\GeomUtil.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Line.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\LineSegment.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\AngleSubdivisionOperation.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConvexPolygon.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConvexPolygonObject.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\IntersectionOperation.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\LerpSubdivisionOperation.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Range.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\ChainLine.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\ChainLineFactory.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\IChainLineUpdater.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\LiveTimeGradientUpdater.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\LiveTimeUpdater.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\TrailUpdater.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\Vertex.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ManyMeshLine.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\ProcedureMeshLine.cs" />
+     <Compile Include="Assets\Seiro\Scripts\PerlinNoise\PerlinNoiseD1.cs" />
+     <None Include="Assets\StreamingAssets\positions.txt" />
+     <None Include="Assets\StreamingAssets\pos0x03d3_packets.txt" />
+     <None Include="Assets\StreamingAssets\positions0_1.txt" />
+     <None Include="Assets\StreamingAssets\positions0_3.txt" />
+     <None Include="Assets\StreamingAssets\pos118.15.153.55.txt" />
+     <None Include="Assets\StreamingAssets\pos126.94.199.169.txt" />
+     <None Include="Assets\StreamingAssets\pos126.118.22.78.txt" />
+     <None Include="Assets\StreamingAssets\pos106.177.199.156.txt" />
+     <None Include="Assets\StreamingAssets\pos211.131.14.229.txt" />
+     <None Include="Assets\StreamingAssets\positions0_2.txt" />
+     <None Include="Assets\StreamingAssets\pos31.150.47.35.txt" />
+     <None Include="Assets\StreamingAssets\pos123.217.31.135.txt" />
+     <None Include="Assets\StreamingAssets\positions0_0.txt" />
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

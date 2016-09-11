@@ -1,0 +1,17 @@
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/seiro/Unityprojects/GeomPractice/obj/Debug/Assembly-CSharp.dll
+/Users/seiro/Unityprojects/GeomPractice/obj/Debug/Assembly-CSharp.dll.mdb
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/UnityEngine.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/UnityEditor.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/UnityEngine.Networking.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/UnityEngine.UI.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Mono.Cecil.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Unity.SerializationLogic.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Unity.DataContract.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/ICSharpCode.NRefactory.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Unity.UNetWeaver.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Unity.UNetWeaver.dll.mdb
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Unity.CecilTools.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/seiro/Unityprojects/GeomPractice/Temp/bin/Debug/Mono.Cecil.Mdb.dll
