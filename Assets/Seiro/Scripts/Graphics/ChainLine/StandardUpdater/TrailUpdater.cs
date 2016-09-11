@@ -17,7 +17,7 @@ namespace Seiro.Scripts.Graphics.ChainLine.StandardUpdater {
 
 		#region IChainLineUpdater
 
-		public void Init(ChainLine orner) {
+		public void Init(ChainLine owner) {
 		}
 
 		public void Update(List<Vertex> vertices) {

@@ -11,9 +11,11 @@ namespace Seiro.Scripts.Graphics.ChainLine {
 	public class ChainLine {
 
 		[SerializeField]
-		private List<Vertex> vertices;              //頂点リスト
+		private List<Vertex> vertices;                              //頂点リスト
 		private IChainLineUpdater[] updaters;                       //更新機リスト
 		private Dictionary<Type, IChainLineUpdater> updaterDic;     //更新機辞書
+		private bool vertsZeroWithDeath = false;                    //頂点が無くなったら削除
+		public bool VertsZeroWithDeath { get { return vertsZeroWithDeath; } set { vertsZeroWithDeath = value; } }
 
 		#region Constructors
 
@@ -40,6 +42,8 @@ namespace Seiro.Scripts.Graphics.ChainLine {
 			} else {
 				this.updaters = new IChainLineUpdater[0];
 			}
+			//オプション
+			this.vertsZeroWithDeath = false;
 		}
 
 		#endregion

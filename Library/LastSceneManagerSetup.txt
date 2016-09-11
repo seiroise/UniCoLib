@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Geom/Cap.17 PathVisualizer.unity
+- path: Assets/Scenes/PerlinNoise/Chap1_PerlinNoiseD1.unity
   isLoaded: 1
   isActive: 1
