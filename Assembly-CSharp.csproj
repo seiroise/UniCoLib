@@ -95,6 +95,7 @@
      <Compile Include="Assets\Scripts\Geom\Cap.17\Cap17Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
+     <Compile Include="Assets\Scripts\UI\Chap.1 CircleUI\Chap1_CircleUI_Demo.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\CollisionEventSystem.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\ICollisionEventHandler.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\PseudoHalfPlaneGenerator.cs" />
@@ -119,8 +120,8 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\LiveTimeUpdater.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\TrailUpdater.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\Vertex.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Graphics\ManyMeshLine.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Graphics\ProcedureMeshLine.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\CircleVisualizer\CircleFragment.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\EasyMesh.cs" />
      <Compile Include="Assets\Seiro\Scripts\PerlinNoise\PerlinNoiseD1.cs" />
      <None Include="Assets\StreamingAssets\positions.txt" />
      <None Include="Assets\StreamingAssets\pos0x03d3_packets.txt" />
