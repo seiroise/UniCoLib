@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Seiro.Scripts.Graphics.CircleVisualizer;
+using Seiro.Scripts.Graphics.Circle;
 using Seiro.Scripts.Graphics;
 
 public class Chap1_CircleUI_Demo : MonoBehaviour {
@@ -21,7 +21,7 @@ public class Chap1_CircleUI_Demo : MonoBehaviour {
 			float start = deltaAngle * i;
 			fragment.SetRange(start, start + deltaAngle);
 			fragment.SetRadius(4f, 4.1f);
-			fragment.SetOption(10f, 1f, colors.Evaluate((float)i / num));
+			fragment.SetOptions(10f, 1f, colors.Evaluate((float)i / num));
 			fragments.Add(fragment);
 		}
 
@@ -42,7 +42,7 @@ public class Chap1_CircleUI_Demo : MonoBehaviour {
 				fragments[i].SetIndicate(CircleFragment.Indicate.Visible, CircleFragment.RangeIndicate.StartToEnd, CircleFragment.RadiusIndicate.Fixed);
 			}
 		}
-
+		/*
 		if(fragments != null) {
 			EasyMesh[] eMeshs = new EasyMesh[fragments.Count];
 			for(int i = 0; i < fragments.Count; ++i) {
@@ -50,6 +50,7 @@ public class Chap1_CircleUI_Demo : MonoBehaviour {
 			}
 			mf.mesh = EasyMesh.ToMesh(eMeshs);
 		}
+		*/
 	}
 
 	#endregion

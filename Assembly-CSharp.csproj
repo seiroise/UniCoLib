@@ -120,9 +120,10 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\LiveTimeUpdater.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\StandardUpdater\TrailUpdater.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\ChainLine\Vertex.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Graphics\CircleVisualizer\CircleFragment.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\Circle\CircleFragment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\EasyMesh.cs" />
      <Compile Include="Assets\Seiro\Scripts\PerlinNoise\PerlinNoiseD1.cs" />
+     <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
      <None Include="Assets\StreamingAssets\positions.txt" />
      <None Include="Assets\StreamingAssets\pos0x03d3_packets.txt" />
      <None Include="Assets\StreamingAssets\positions0_1.txt" />

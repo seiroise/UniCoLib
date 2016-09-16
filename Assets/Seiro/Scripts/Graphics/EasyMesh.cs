@@ -63,6 +63,7 @@ namespace Seiro.Scripts.Graphics {
 			int[] indices = new int[indexCount];
 			int vc = 0, cc = 0, ic = 0;
 			foreach(EasyMesh e in eMeshes) {
+				if(e == null) continue;
 				//verts
 				for(int i = 0; i < e.verts.Length; ++i) {
 					vertices[vc + i] = e.verts[i];

@@ -2,7 +2,7 @@
 using System.Collections;
 using Seiro.Scripts.Geometric;
 
-namespace Seiro.Scripts.Graphics.CircleVisualizer {
+namespace Seiro.Scripts.Graphics.Circle {
 
 	/// <summary>
 	/// 円のかけら
@@ -14,16 +14,16 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 		/// </summary>
 		public class LerpParm {
 
-			public float value;			//現在値
-			private float target;		//目標値
-			public bool prcessing;		//処理中
+			public float value;         //現在値
+			private float target;       //目標値
+			public bool processing;     //処理中
 
 			#region Constructor
 
 			public LerpParm(float value, float target) {
 				this.value = value;
 				this.target = target;
-				this.prcessing = true;
+				this.processing = true;
 			}
 
 			#endregion
@@ -34,11 +34,11 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 			/// 更新
 			/// </summary>
 			public float Update(float t, float epsilon = 0.001f) {
-				if(!prcessing) return value;
+				if(!processing) return value;
 				value = Mathf.Lerp(value, target, t);
 				if(Mathf.Abs(target - value) < epsilon) {
 					value = target;
-					prcessing = false;
+					processing = false;
 				}
 				return value;
 			}
@@ -94,6 +94,12 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 		private Color color;
 
 		//キャッシュ
+		private EasyMesh cache;
+		public EasyMesh Cache { get { return cache; } }
+
+		//フラグ
+		private bool processing = false;    //処理中
+		public bool Processing { get { return processing; } }
 
 		//その他
 		private const float EPSILON = 0.001f;
@@ -103,8 +109,9 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 		/// <summary>
 		/// 更新
 		/// </summary>
-		public EasyMesh Update() {
-			if(start == null || end == null|| inner == null || outer == null) return null;
+		public void Update() {
+			if(!processing) return;
+			if(start == null || end == null || inner == null || outer == null) return;
 			//更新
 			float t = processSpeed * Time.deltaTime;
 			start.Update(t, EPSILON);
@@ -112,8 +119,11 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 			inner.Update(t, EPSILON);
 			outer.Update(t, EPSILON);
 
+			//処理中確認
+			processing = start.processing || end.processing || inner.processing || outer.processing;
+
 			//簡易メッシュの作成
-			return MakeEasyMesh();
+			cache = MakeEasyMesh();
 		}
 
 		/// <summary>
@@ -147,7 +157,7 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 					if(radius == RadiusIndicate.InnerToOuter) {
 						inner = new LerpParm(innerAnchor, innerAnchor);
 						outer = new LerpParm(innerAnchor, outerAnchor);
-					} else if(radius == RadiusIndicate.OuterToInner){
+					} else if(radius == RadiusIndicate.OuterToInner) {
 						inner = new LerpParm(outerAnchor, innerAnchor);
 						outer = new LerpParm(outerAnchor, outerAnchor);
 					}
@@ -159,7 +169,7 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 					if(radius == RadiusIndicate.InnerToOuter) {
 						inner = new LerpParm(innerAnchor, innerAnchor);
 						outer = new LerpParm(innerAnchor, outerAnchor);
-					} else if(radius == RadiusIndicate.OuterToInner){
+					} else if(radius == RadiusIndicate.OuterToInner) {
 						inner = new LerpParm(outerAnchor, innerAnchor);
 						outer = new LerpParm(outerAnchor, outerAnchor);
 					}
@@ -174,7 +184,7 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 					if(radius == RadiusIndicate.InnerToOuter) {
 						inner = new LerpParm(innerAnchor, outerAnchor);
 						outer = new LerpParm(outerAnchor, outerAnchor);
-					} else if(radius == RadiusIndicate.OuterToInner){
+					} else if(radius == RadiusIndicate.OuterToInner) {
 						inner = new LerpParm(innerAnchor, innerAnchor);
 						outer = new LerpParm(outerAnchor, innerAnchor);
 					}
@@ -186,23 +196,27 @@ namespace Seiro.Scripts.Graphics.CircleVisualizer {
 					if(radius == RadiusIndicate.InnerToOuter) {
 						inner = new LerpParm(innerAnchor, outerAnchor);
 						outer = new LerpParm(outerAnchor, outerAnchor);
-					} else if(radius == RadiusIndicate.OuterToInner){
+					} else if(radius == RadiusIndicate.OuterToInner) {
 						inner = new LerpParm(innerAnchor, innerAnchor);
 						outer = new LerpParm(outerAnchor, innerAnchor);
 					}
 				}
 			}
 
+			//半径の固定設定
 			if(radius == RadiusIndicate.Fixed) {
 				inner = new LerpParm(innerAnchor, innerAnchor);
 				outer = new LerpParm(outerAnchor, outerAnchor);
 			}
+
+			//処理中
+			processing = true;
 		}
 
 		/// <summary>
 		/// オプションの設定
 		/// </summary>
-		public void SetOption(float progressSpeed, float density, Color color) {
+		public void SetOptions(float progressSpeed, float density, Color color) {
 			this.processSpeed = progressSpeed;
 			this.density = density;
 			this.color = color;
