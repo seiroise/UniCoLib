@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/PerlinNoise/Chap1_PerlinNoiseD1.unity
+- path: Assets/Scenes/UI/Chap.1.1 UICircle.unity
   isLoaded: 1
   isActive: 1

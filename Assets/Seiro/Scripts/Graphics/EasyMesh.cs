@@ -47,12 +47,14 @@ namespace Seiro.Scripts.Graphics {
 		/// </summary>
 		public static Mesh ToMesh(EasyMesh[] eMeshes) {
 			Mesh mesh = new Mesh();
+			mesh.Clear();
 			mesh.name = "Connected Mesh";
 			//カウント
 			int vertCount = 0;
 			int colorCount = 0;
 			int indexCount = 0;
 			foreach(EasyMesh e in eMeshes) {
+				if(e == null) continue;
 				vertCount += e.verts.Length;
 				colorCount += e.colors.Length;
 				indexCount += e.indices.Length;
@@ -92,6 +94,7 @@ namespace Seiro.Scripts.Graphics {
 			mesh.colors = colors;
 			mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 			mesh.RecalculateNormals();
+			mesh.RecalculateBounds();
 			return mesh;
 		}
 

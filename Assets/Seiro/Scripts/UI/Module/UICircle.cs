@@ -11,7 +11,7 @@ namespace Seiro.Scripts.UI.Module {
 	/// 円状のUI表示
 	/// </summary>
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-	public class UICircle : MonoBehaviour , ICollisionEventHandler {
+	public class UICircle : MonoBehaviour, ICollisionEventHandler {
 
 		#region Inner Class
 
@@ -36,7 +36,9 @@ namespace Seiro.Scripts.UI.Module {
 				this.frag = null;
 				this.text = "";
 				this.color = Color.white;
+				this.hide = false;
 				this.children = new List<FragmentMeta>();
+				this.depth = 0;
 			}
 		}
 
@@ -49,21 +51,35 @@ namespace Seiro.Scripts.UI.Module {
 		private float outerRaadius = 3f;
 
 		[SerializeField]
-		private float sectorInterval = 1f;	//トラック内のセクタとの間隔(角度指定)
+		private float sectorInterval = 1f;  //トラック内のセクタとの間隔(角度指定)
 
 		[SerializeField]
-		private float trackInterval = 1f;	//トラック間の間隔
+		private float trackInterval = 1f;   //トラック間の間隔
+
+		[SerializeField]
+		private CircleFragment.RangeIndicate rangeIndicate;
+
+		[SerializeField]
+		private CircleFragment.RadiusIndicate radiusIndicate;
 
 		[SerializeField, Multiline(8)]
 		private string textTree;
 
+		//メッシュ関連
 		private MeshFilter mf;
 		private MeshCollider mc;
 
-		//内部データ
+		//描画関連
 		private List<FragmentMeta> drawFrags;   //描画が必要な断片群
+		private EasyMesh[] drawEMeshes;         //描画された簡易メッシュ
+		private Stack<FragmentMeta> drawStack;  //表示メタデータスタック
+
+		//更新関連
 		private List<FragmentMeta> updateFrags; //更新が必要な断片群
+
+		//メタデータ関連
 		private FragmentMeta rootMeta;          //テキストから作成した断片のルート
+		private FragmentMeta pointerOverMeta;   //ポインタの重なっているフラグメントのメタデータ
 
 		#region UnityEvent
 
@@ -73,6 +89,7 @@ namespace Seiro.Scripts.UI.Module {
 			mc = GetComponent<MeshCollider>();
 
 			drawFrags = new List<FragmentMeta>();
+			drawStack = new Stack<FragmentMeta>();
 			updateFrags = new List<FragmentMeta>();
 		}
 
@@ -88,21 +105,14 @@ namespace Seiro.Scripts.UI.Module {
 			if(Input.GetKeyDown(KeyCode.V)) {
 				Visible(rootMeta);
 			}
-			if(Input.GetKeyDown(KeyCode.B)) {
-				Hide(rootMeta);
-			}
-
-			if(Input.GetKeyDown(KeyCode.N)) {
-				Visible(rootMeta.children[0]);
-			}
-			if(Input.GetKeyDown(KeyCode.M)) {
-				Hide(rootMeta.children[0]);
-			}
 		}
 
 		private void OnGUI() {
 			GUILayout.Label("DrawFrags = " + drawFrags.Count);
 			GUILayout.Label("UpdateFrags = " + updateFrags.Count);
+			if(pointerOverMeta != null) {
+				GUILayout.Label("Over = " + pointerOverMeta.text);
+			}
 		}
 
 		#endregion
@@ -120,12 +130,13 @@ namespace Seiro.Scripts.UI.Module {
 				--i;
 				meta = updateFrags[i];
 				frag = meta.frag;
-				frag.Update();
 				if(!frag.Processing) {
 					if(meta.hide) {
 						drawFrags.Remove(meta);
 					}
 					updateFrags.Remove(meta);
+				} else {
+					frag.Update();
 				}
 			}
 		}
@@ -144,7 +155,11 @@ namespace Seiro.Scripts.UI.Module {
 				//簡易メッシュを変換
 				Mesh mesh = EasyMesh.ToMesh(eMeshes);
 				mf.mesh = mesh;
-				//当たり判定
+				drawEMeshes = eMeshes;
+				//当たり判定(メッシュのサイズが小さすぎる場合は設定しない)
+				if(mc.sharedMesh != null) {
+					mc.sharedMesh.Clear();
+				}
 				mc.sharedMesh = mesh;
 			}
 		}
@@ -284,21 +299,29 @@ namespace Seiro.Scripts.UI.Module {
 		}
 
 		/// <summary>
-		/// 断片群の表示
-		/// </summary>
-		private void Visible(List<FragmentMeta> metas) {
-			MakeFragments(metas, innerRadius, outerRaadius);
-			for(int i = 0; i < metas.Count; ++i) {
-				metas[i].hide = false;
-				metas[i].frag.SetIndicate(CircleFragment.Indicate.Visible, CircleFragment.RangeIndicate.StartToEnd, CircleFragment.RadiusIndicate.Fixed);
-				AddFragment(metas[i]);
-			}
-		}
-
-		/// <summary>
-		/// 断片群の表示
+		/// 表示
 		/// </summary>
 		private void Visible(FragmentMeta meta) {
+
+			int adjust = meta.depth - drawStack.Count;
+
+			if(adjust >= 0) {
+				drawStack.Push(meta);
+				VisibleMeta(meta);
+			}
+		}
+
+		/// <summary>
+		/// 非表示
+		/// </summary>
+		private void Hide(FragmentMeta meta) {
+
+		}
+
+		/// <summary>
+		/// メタデータの子断片群の表示
+		/// </summary>
+		private void VisibleMeta(FragmentMeta meta) {
 			List<FragmentMeta> metas = meta.children;
 			if(metas.Count <= 0) return;
 
@@ -309,15 +332,15 @@ namespace Seiro.Scripts.UI.Module {
 			//表示方法を決めて描画/更新リストに突っ込む
 			for(int i = 0; i < metas.Count; ++i) {
 				metas[i].hide = false;
-				metas[i].frag.SetIndicate(CircleFragment.Indicate.Visible, CircleFragment.RangeIndicate.StartToEnd, CircleFragment.RadiusIndicate.Fixed);
+				metas[i].frag.SetIndicate(CircleFragment.Indicate.Visible, rangeIndicate, radiusIndicate);
 				AddFragment(metas[i]);
 			}
 		}
 
 		/// <summary>
-		/// 断片群の表示
+		/// メタデータの子断片群の非表示
 		/// </summary>
-		private void Hide(FragmentMeta meta) {
+		private void HideMeta(FragmentMeta meta) {
 			List<FragmentMeta> metas = meta.children;
 			if(metas.Count <= 0) return;
 
@@ -328,33 +351,53 @@ namespace Seiro.Scripts.UI.Module {
 			//表示方法を決めて描画/更新リストに突っ込む
 			for(int i = 0; i < metas.Count; ++i) {
 				metas[i].hide = true;
-				metas[i].frag.SetIndicate(CircleFragment.Indicate.Hide, CircleFragment.RangeIndicate.StartToEnd, CircleFragment.RadiusIndicate.Fixed);
+				metas[i].frag.SetIndicate(CircleFragment.Indicate.Hide, rangeIndicate, radiusIndicate);
 				AddFragment(metas[i]);
 			}
 		}
 
 		/// <summary>
-		/// 断片群の非表示
+		/// 三角形インデックスからどの
 		/// </summary>
-		private void Hide(List<FragmentMeta> metas) {
-			MakeFragments(metas, innerRadius, outerRaadius);
-			for(int i = 0; i < metas.Count; ++i) {
-				metas[i].hide = true;
-				metas[i].frag.SetIndicate(CircleFragment.Indicate.Hide, CircleFragment.RangeIndicate.StartToEnd, CircleFragment.RadiusIndicate.Fixed);
-				AddFragment(metas[i]);
+		private FragmentMeta GetMetaFromIndex(int triangleIndex) {
+			int sum = 0;
+			int i = 0;
+			foreach(var e in drawEMeshes) {
+				sum += e.indices.Length / 3;
+				if(triangleIndex < sum) {
+					return drawFrags[i];
+				}
+				++i;
 			}
+			return null;
 		}
 
 		#endregion
 
 		#region ICollisionEventHandler
 
-		public void OnPointerEnter() {
+		public void OnPointerEnter(RaycastHit hit) {
 			Debug.Log("Enter");
+			pointerOverMeta = GetMetaFromIndex(hit.triangleIndex);
 		}
 
-		public void OnPointerExit() {
+		public void OnPointerExit(RaycastHit hit) {
 			Debug.Log("Exit");
+			pointerOverMeta = null;
+		}
+
+		public void OnPointerDown(RaycastHit hit) {
+			throw new NotImplementedException();
+		}
+
+		public void OnPointerUp(RaycastHit hit) {
+			throw new NotImplementedException();
+		}
+
+		public void OnPointerClick(RaycastHit hit) {
+			Debug.Log("Click " + hit.triangleIndex);
+			FragmentMeta meta = GetMetaFromIndex(hit.triangleIndex);
+			VisibleMeta(meta);
 		}
 
 		#endregion

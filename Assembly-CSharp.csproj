@@ -95,7 +95,9 @@
      <Compile Include="Assets\Scripts\Geom\Cap.17\Cap17Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
-     <Compile Include="Assets\Scripts\UI\Chap.1 CircleUI\Chap1_CircleUI_Demo.cs" />
+     <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
+     <Compile Include="Assets\Scripts\UI\Chap1.1 UICircle\UICircle.cs" />
+     <Compile Include="Assets\Scripts\UI\Chap1.1 UICircle\UICircleFragment.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\CollisionEventSystem.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\ICollisionEventHandler.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\PseudoHalfPlaneGenerator.cs" />
@@ -124,6 +126,8 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\EasyMesh.cs" />
      <Compile Include="Assets\Seiro\Scripts\PerlinNoise\PerlinNoiseD1.cs" />
      <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Utility\LerpColor.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Utility\LerpFloat.cs" />
      <None Include="Assets\StreamingAssets\positions.txt" />
      <None Include="Assets\StreamingAssets\pos0x03d3_packets.txt" />
      <None Include="Assets\StreamingAssets\positions0_1.txt" />

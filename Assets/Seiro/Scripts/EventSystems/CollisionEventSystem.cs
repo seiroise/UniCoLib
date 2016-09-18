@@ -8,18 +8,31 @@ namespace Seiro.Scripts.EventSystems {
 	/// </summary>
 	public class CollisionEventSystem : MonoBehaviour {
 
+		//レイキャスト用カメラ
 		[SerializeField]
-		private Camera camera;  //レイキャスト用カメラ
+		private Camera camera;
 
+		//クリック判定
+		[SerializeField]
+		private int mouseButton = 0;
+		private Collider downCollider;	//押した時のコライダ
+
+		//その他
 		private Collider prevCollider;
-
-		//private Dictionary<Collider, > cash;
+		private RaycastHit hitInfo;
+		private const float EPSILON = 0.001f;
+		private Dictionary<Collider, ICollisionEventHandler> cache;
 
 		#region UnityEvent
 
+		private void Awake() {
+			cache = new Dictionary<Collider, ICollisionEventHandler>();
+		}
+
 		private void Update() {
 			Vector2 screenPos = Input.mousePosition;
-			Highlight(screenPos);
+			CheckHighlight(screenPos);
+			CheckClick();
 		}
 
 		#endregion
@@ -27,14 +40,15 @@ namespace Seiro.Scripts.EventSystems {
 		#region Function
 
 		/// <summary>
-		/// 重なり判定
+		/// 重なり確認
 		/// </summary>
-		private void Highlight(Vector2 screenPos) {
+		private void CheckHighlight(Vector2 screenPos) {
 			Ray ray = camera.ScreenPointToRay(screenPos);
 			RaycastHit hit;
 			if(Physics.Raycast(ray, out hit, 100f)) {
-				Collider hitCollider = hit.collider;
 				//ヒットした場合
+				Collider hitCollider = hit.collider;
+				hitInfo = hit;
 				if(prevCollider != hitCollider) {
 					if(prevCollider == null) {
 						//Enter
@@ -51,6 +65,25 @@ namespace Seiro.Scripts.EventSystems {
 					//Exit
 					ExitCollider(prevCollider);
 				}
+				hitInfo = hit;
+			}
+		}
+
+		/// <summary>
+		/// クリック確認
+		/// </summary>
+		private void CheckClick() {
+			if(Input.GetMouseButtonUp(mouseButton)) {
+				if(downCollider == prevCollider) {
+					UpCollider(downCollider);
+					ClickCollider(downCollider);
+				}
+			}
+			if(Input.GetMouseButtonDown(mouseButton)) {
+				if(prevCollider != null) {
+					downCollider = prevCollider;
+					DownCollider(downCollider);
+				}
 			}
 		}
 
@@ -58,11 +91,10 @@ namespace Seiro.Scripts.EventSystems {
 		/// コライダー範囲に侵入
 		/// </summary>
 		private void EnterCollider(Collider col) {
-			Debug.Log("Enter");
 			//コンポーネントの取得
-			ICollisionEventHandler handler = col.GetComponent<ICollisionEventHandler>();
+			ICollisionEventHandler handler = GetHandler(col);
 			if(handler != null) {
-				handler.OnPointerEnter();
+				handler.OnPointerEnter(hitInfo);
 			}
 			prevCollider = col;
 		}
@@ -71,13 +103,61 @@ namespace Seiro.Scripts.EventSystems {
 		/// コライダー範囲から退出
 		/// </summary>
 		private void ExitCollider(Collider col) {
-			Debug.Log("Exit");
 			//コンポーネントの取得
-			ICollisionEventHandler handler = col.GetComponent<ICollisionEventHandler>();
+			ICollisionEventHandler handler = GetHandler(col);
 			if(handler != null) {
-				handler.OnPointerExit();
+				handler.OnPointerExit(hitInfo);
 			}
 			prevCollider = null;
+		}
+
+		/// <summary>
+		/// コライダー範囲でのボタン押下
+		/// </summary>
+		private void DownCollider(Collider col) {
+			//コンポーネントの取得
+			ICollisionEventHandler handler = GetHandler(col);
+			if(handler != null) {
+				handler.OnPointerDown(hitInfo);
+			}
+		}
+
+		/// <summary>
+		/// コライダー範囲でのボタン押上
+		/// </summary>
+		private void UpCollider(Collider col) {
+			//コンポーネントの取得
+			ICollisionEventHandler handler = GetHandler(col);
+			if(handler != null) {
+				handler.OnPointerUp(hitInfo);
+			}
+		}
+
+		/// <summary>
+		/// コライダー範囲でのクリック
+		/// </summary>
+		private void ClickCollider(Collider col) {
+			ICollisionEventHandler handler = GetHandler(downCollider);
+			if(handler != null) {
+				handler.OnPointerClick(hitInfo);
+			}
+		}
+
+		/// <summary>
+		/// コライダーからハンドラーを取得
+		/// </summary>
+		private ICollisionEventHandler GetHandler(Collider col) {
+			if(col == null) return null;
+			//キャッシュを確認
+			if(cache.ContainsKey(col)) {
+				return cache[col];
+			}
+			//キャッシュになければ追加
+			ICollisionEventHandler handler = col.GetComponent<ICollisionEventHandler>();
+			if(handler != null) {
+				cache.Add(col, handler);
+			}
+			return handler;
 		}
 
 		#endregion
