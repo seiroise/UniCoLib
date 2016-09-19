@@ -12,7 +12,7 @@ namespace Seiro.Scripts.PerlinNoise {
 		/// <summary>
 		/// ノイズの生成
 		/// </summary>
-		private static float[] Noise(int ctrlCount, int noiseScaling, float amplitude) {
+		public static float[] Noise(int ctrlCount, int noiseScaling, float amplitude) {
 
 			float[] gradients;
 			float[] noise;
@@ -48,7 +48,7 @@ namespace Seiro.Scripts.PerlinNoise {
 		/// <summary>
 		/// オクターブノイズの生成
 		/// </summary>
-		private static float[] Noise(int ctrlCount, int noiseScaling, int octave) {
+		public static float[] Noise(int ctrlCount, int noiseScaling, int octave) {
 
 			//重ね合わせた波形
 			float amplitude = 1f;
@@ -56,7 +56,7 @@ namespace Seiro.Scripts.PerlinNoise {
 			int nextCtrlCount = ctrlCount;
 
 			//波形の重ね合わせ処理
-			for(int i = 0; i <= octave; ++i) {
+			for(int i = 0; i < octave; ++i) {
 				nextCtrlCount *= 2;
 				amplitude *= 0.5f;
 				float[] noise = Noise(nextCtrlCount, noiseScaling, amplitude);

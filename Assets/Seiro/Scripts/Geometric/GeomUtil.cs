@@ -35,5 +35,19 @@ namespace Seiro.Scripts.Geometric {
 			Vector2 v0 = to1 - from, v1 = to2 - from;
 			return Mathf.Acos(Dot(v0, v1) / (v0.magnitude * v1.magnitude)) * Mathf.Rad2Deg;
 		}
+
+		/// <summary>
+		/// radian角を二次元ベクトルに変換
+		/// </summary>
+		public static Vector2 RadToVector2(float radian) {
+			return new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+		}
+
+		/// <summary>
+		/// degree角を二次元ベクトルに変換
+		/// </summary>
+		public static Vector2 DegToVector2(float degree) {
+			return RadToVector2(degree * Mathf.Deg2Rad);
+		}
 	}
 }

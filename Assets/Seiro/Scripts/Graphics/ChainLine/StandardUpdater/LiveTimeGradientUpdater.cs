@@ -14,8 +14,8 @@ namespace Seiro.Scripts.Graphics.ChainLine.StandardUpdater {
 
 		#region IChainLineUpdater
 
-		public void Init(ChainLine orner) {
-			liveTimeUpdater = (LiveTimeUpdater)orner.GetUpdater<LiveTimeUpdater>();
+		public void Init(ChainLine owner) {
+			liveTimeUpdater = (LiveTimeUpdater)owner.GetUpdater<LiveTimeUpdater>();
 		}
 
 		public void Update(List<Vertex> vertices) {

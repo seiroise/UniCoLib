@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Geom/Cap.17 PathVisualizer.unity
+- path: Assets/Scenes/LineEditor/Chap1_LineEditor.unity
   isLoaded: 1
   isActive: 1

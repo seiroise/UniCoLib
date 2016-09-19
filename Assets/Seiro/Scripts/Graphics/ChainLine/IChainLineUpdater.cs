@@ -11,7 +11,7 @@ namespace Seiro.Scripts.Graphics.ChainLine {
 		/// <summary>
 		/// 初期化時に一度だけ呼ばれる
 		/// </summary>
-		void Init(ChainLine orner);
+		void Init(ChainLine owner);
 
 		/// <summary>
 		/// 更新時にChainLineから呼ばれる

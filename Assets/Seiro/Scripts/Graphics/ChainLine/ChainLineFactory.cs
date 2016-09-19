@@ -45,6 +45,14 @@ namespace Seiro.Scripts.Graphics.ChainLine {
 			List<Color> colors = new List<Color>();
 			List<int> indices = new List<int>();
 
+			//削除確認
+			for(int i = lines.Count - 1; i >= 0; --i) {
+				if(lines[i].VertsZeroWithDeath) {
+					DeleteLine(lines[i]);
+				}
+			}
+
+			//更新と描画
 			for(int i = 0; i < lines.Count; ++i) {
 				//更新
 				lineVerts = lines[i].Update();

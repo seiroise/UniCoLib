@@ -79,12 +79,24 @@ public class ConvexPolygonButton : MonoBehaviour, ICollisionEventHandler {
 
 	#region ICollisionEventHandler
 
-	public void OnPointerEnter() {
+	public void OnPointerEnter(RaycastHit hit) {
 		hover = true;
 	}
 
-	public void OnPointerExit() {
+	public void OnPointerExit(RaycastHit hit) {
 		hover = false;
+	}
+
+	public void OnPointerClick(RaycastHit hit) {
+		Debug.Log("Click");
+	}
+
+	public void OnPointerDown(RaycastHit hit) {
+		
+	}
+
+	public void OnPointerUp(RaycastHit hit) {
+		
 	}
 
 	#endregion
