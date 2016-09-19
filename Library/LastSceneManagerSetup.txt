@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/UI/Chap.1.1 UICircle.unity
+- path: Assets/Scenes/LineEditor/Chap1_LineEditor.unity
   isLoaded: 1
   isActive: 1

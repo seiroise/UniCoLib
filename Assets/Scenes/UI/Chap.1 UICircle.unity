@@ -226,7 +226,7 @@ MonoBehaviour:
   trackInterval: 0.1
   rangeIndicate: 0
   radiusIndicate: 2
-  textTree: "t:\u653B\u6483\nt:\u6575\nt:\u5473\u65B9\nt:\u305D\u306E\u4ED6\nt:\u9B54\u6CD5\n-
+  textTree: "t:\u653B\u6483\n- t:\u6575\n- t:\u5473\u65B9\n- t:\u305D\u306E\u4ED6\nt:\u9B54\u6CD5\n-
     t:\u30E1\u30E9\n- t:\u30E1\u30E9\u30DF\n- t:\u30E1\u30E9\u30BE\u30FC\u30DE\n-
     t:\u30A4\u30AA\n- t:\u30A4\u30AA\u30E9\n- t:\u30A4\u30AA\u30CA\u30BA\u30F3\n-
     t:\u30D2\u30E3\u30C9\n- t:\u30D2\u30E3\u30C0\u30EB\u30B3\n- t:\u30DE\u30D2\u30E3\u30C9\nt:\u9632\u5FA1\nt.\u88C5\u5099\nt:\u9003\u8D70"

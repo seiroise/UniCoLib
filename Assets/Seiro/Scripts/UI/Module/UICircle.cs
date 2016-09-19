@@ -387,11 +387,11 @@ namespace Seiro.Scripts.UI.Module {
 		}
 
 		public void OnPointerDown(RaycastHit hit) {
-			throw new NotImplementedException();
+			
 		}
 
 		public void OnPointerUp(RaycastHit hit) {
-			throw new NotImplementedException();
+			
 		}
 
 		public void OnPointerClick(RaycastHit hit) {

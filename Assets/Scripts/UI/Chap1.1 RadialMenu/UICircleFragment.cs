@@ -6,12 +6,12 @@ using Seiro.Scripts.Utility;
 using Seiro.Scripts.Geometric;
 
 /// <summary>
-/// 円形UIの断片
+/// UI用の円の断片
 /// </summary>
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 
-	private UICircle manager;
+	private RadialMenu manager;
 	private CircleFragment frag;
 
 	private MeshFilter mf;
@@ -89,7 +89,7 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	/// <summary>
 	/// 管理者の設定
 	/// </summary>
-	public void SetManager(UICircle manager) {
+	public void SetManager(RadialMenu manager) {
 		this.manager = manager;
 	}
 

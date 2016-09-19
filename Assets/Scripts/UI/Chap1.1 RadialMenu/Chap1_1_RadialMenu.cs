@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 using System;
 
-public class Chap1_1_UICircle : MonoBehaviour {
+public class Chap1_1_RadialMenu : MonoBehaviour {
 
-	public UICircle circle;
+	public RadialMenu radialMenu;
 
 	#region UnityEvent
 
 	private void Start() {
-		circle.AddClickCallback("Exit.OK", OnCLickedExitOK);
+		radialMenu.AddClickCallback("Exit.OK", OnCLickedExitOK);
 	}
 
 	private void Update() {
 		if(Input.GetMouseButtonDown(1)) {
-			if(circle.Visibled) {
-				circle.Hide();
+			if(radialMenu.Visibled) {
+				radialMenu.Hide();
 			} else {
-				circle.Visible();
+				radialMenu.Visible();
 			}
 		}
 	}

@@ -6,11 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// 円形のUIを表示する
+/// RadialMenu
 /// </summary>
-public class UICircle : MonoBehaviour {
-
-	public Transform rootCircle;    //テスト用
+public class RadialMenu : MonoBehaviour {
 
 	public float innerRadius = 1f;
 	public float radiusRange = 0.5f;
