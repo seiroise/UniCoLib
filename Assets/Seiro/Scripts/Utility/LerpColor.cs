@@ -8,10 +8,15 @@ namespace Seiro.Scripts.Utility {
 	/// </summary>
 	public class LerpColor {
 
-		private Color value;
+		private Color value;    //現在値
 		public Color Value { get { return value; } }
 
-		private Color target;
+		private Color target;   //目標値
+
+		private Color colorDelta;   //前回との差(color)
+		public Color ColorDelta { get { return colorDelta; } }
+		private float floatDelta;   //前回との差(float)
+		public float FloatDelta { get { return floatDelta; } }
 
 		private bool processing;
 		public bool Processing { get { return processing; } }
@@ -56,12 +61,12 @@ namespace Seiro.Scripts.Utility {
 			if(!processing) return false;
 			value = Color.Lerp(value, target, t);
 			//差を求める
-			Color delta = target - value;
-			float sum = 0f;
+			colorDelta = target - value;
+			floatDelta = 0f;
 			for(int i = 0; i < 4; ++i) {
-				sum += Mathf.Abs(delta[i]);
+				floatDelta += Mathf.Abs(colorDelta[i]);
 			}
-			if(sum < epsilon) {
+			if(floatDelta < epsilon) {
 				value = target;
 				processing = false;
 				return true;

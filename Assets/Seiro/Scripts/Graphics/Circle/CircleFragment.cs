@@ -42,19 +42,23 @@ namespace Seiro.Scripts.Graphics.Circle {
 		private float startAnchor;          //始点
 		public float StartAnchor { get { return startAnchor; } }
 		private LerpFloat lerpStart;
+		public float NowStart { get { return lerpStart.Value; } }
 
 		private float endAnchor;            //終点
 		public float EndAnchor { get { return endAnchor; } }
 		private LerpFloat lerpEnd;
+		public float NowEnd { get { return lerpEnd.Value; } }
 
 		//半径
 		private float innerAnchor;          //内径
 		public float InnerAnchor { get { return innerAnchor; } }
 		private LerpFloat lerpInner;
+		public float NowInner { get { return lerpInner.Value; } }
 
 		private float outerAnchor;          //外径
 		public float OuterAnchor { get { return outerAnchor; } }
 		private LerpFloat lerpOuter;
+		public float NowOuter { get { return lerpOuter.Value; } }
 
 		//オプション
 		private float processSpeed = 20f;   //処理速度
@@ -330,6 +334,13 @@ namespace Seiro.Scripts.Graphics.Circle {
 			eMesh.indices = indices;
 
 			return eMesh;
+		}
+
+		/// <summary>
+		/// start,end, inner, outerの平均変化量を取得する
+		/// </summary>
+		public float GetAvgDelta() {
+			return (lerpStart.Delta + lerpEnd.Delta + lerpInner.Delta + lerpOuter.Delta) / 4f;
 		}
 
 		#endregion

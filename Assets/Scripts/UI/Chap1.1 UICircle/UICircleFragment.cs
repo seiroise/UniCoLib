@@ -3,6 +3,7 @@ using Seiro.Scripts.Graphics.Circle;
 using Seiro.Scripts.Graphics;
 using Seiro.Scripts.EventSystems;
 using Seiro.Scripts.Utility;
+using Seiro.Scripts.Geometric;
 
 /// <summary>
 /// 円形UIの断片
@@ -35,10 +36,15 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	public Color parentColor = Color.red;
 	private LerpColor lerpColor;
 
-	[Header("Radius")]
-	public float overOuter = 1.2f;
-	public float clickOuter = 1.1f;
+	//[Header("Radius")]
+	private float overOuter = 1.2f;
+	private float clickOuter = 1.1f;
 	private float normalOuter = 1f;
+
+	[Header("Sprite")]
+	public LerpSpriteColor lerpSprite;
+	public bool adjustSpriteScale = false;
+	public float adjustScale = 1f;
 
 	//ペアレントモード
 	private bool parentMode = false;
@@ -46,6 +52,10 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	//フラグ
 	private bool pointerOver = false;
 	private bool pointerDown = false;
+	private bool visibled = false;
+
+	//閾値
+	private const float SET_MESH_EPSILON = 0.1f;	//小さすぎるメッシュを設定しないため
 
 	#region UnityEvent
 
@@ -55,11 +65,21 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 
 		lerpColor = new LerpColor();
 		lerpColor.SetValues(normalColor, normalColor);
+
+		if(lerpSprite) {
+			lerpSprite.transform.localScale = Vector3.zero;
+		}
+	}
+
+	private void Start() {
+		gameObject.SetActive(false);
 	}
 
 	private void Update() {
+		if(frag == null) return;
 		UpdateFragment();
 		UpdateColor();
+		UpdateSprite();
 	}
 
 	#endregion
@@ -77,7 +97,7 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	/// 更新と描画用メッシュの作成
 	/// </summary>
 	private void UpdateFragment() {
-		if(frag == null) return;
+		if(!frag.Processing) return;
 		//更新
 		frag.Update();
 		//描画キャッシュが更新されていれば更新
@@ -88,7 +108,20 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 				mesh = eMesh.ToMesh();
 			}
 			mf.mesh = mesh;
-			mc.sharedMesh = mesh;
+			//当たり判定用メッシュの設定
+			if(!visibled){
+				if(frag.GetAvgDelta() > SET_MESH_EPSILON) {
+					mc.sharedMesh = mesh;
+				} else {
+					mc.sharedMesh = null;
+				}
+			} else {
+				mc.sharedMesh = mesh;
+			}
+		}
+		//更新の結果処理が終わった場合
+		if(!frag.Processing) {
+			if(!visibled) gameObject.SetActive(false);
 		}
 	}
 
@@ -96,7 +129,6 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	/// 色の更新
 	/// </summary>
 	private void UpdateColor() {
-		if(frag == null) return;
 		if(!lerpColor.Processing) return;
 		lerpColor.Update(animationT * Time.deltaTime);
 		frag.DrawColor = lerpColor.Value;
@@ -104,9 +136,37 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	}
 
 	/// <summary>
+	/// スプライトの更新
+	/// </summary>
+	private void UpdateSprite() {
+
+		if(!frag.Processing) return;
+		if(!lerpSprite) return;
+
+		//座標の調整
+		float centerAngle = (frag.NowEnd - frag.NowStart) * 0.5f + frag.NowStart;
+		float radiusRange = (frag.NowOuter - frag.NowInner);
+		float centerRadius = radiusRange * 0.5f + frag.NowInner;
+		Vector3 pos = GeomUtil.DegToVector2(centerAngle) * centerRadius;
+		pos.z = transform.localPosition.z - 1f;
+
+		//lerpSpriteは自身のローカルにいること?
+		lerpSprite.transform.localPosition = pos;
+
+		//大きさの調整
+		if(adjustSpriteScale) {
+			Vector2 size = lerpSprite.Target.sprite.bounds.size;
+			float scale = radiusRange / size.magnitude;
+			lerpSprite.transform.localScale = Vector2.one * (scale * adjustScale);
+		}
+	}
+
+	/// <summary>
 	/// 表示
 	/// </summary>
 	public void Visible(float start, float end, float inner, float outer) {
+
+		//フラグメントの表示
 		if(frag == null) {
 			frag = new CircleFragment();
 		}
@@ -114,14 +174,31 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 		frag.SetRadius(inner, outer);
 		frag.SetOptions(indicateT, density, normalColor);
 		frag.SetIndicate(CircleFragment.Indicate.Visible, range, radius);
+
+		//スプライトの表示
+		if(lerpSprite != null) {
+			lerpSprite.SetAlphas(0f, 1f);
+		}
+
+		visibled = true;
 	}
 
 	/// <summary>
 	/// 非表示
 	/// </summary>
 	public void Hide() {
+
+		//フラグメントの非表示
 		if(frag == null) return;
+		frag.ProcessSpeed = indicateT;
 		frag.SetIndicate(CircleFragment.Indicate.Hide, range, radius);
+
+		//スプライトの非表示
+		if(lerpSprite != null) {
+			lerpSprite.SetAlphaTarget(0f);
+		}
+
+		visibled = false;
 	}
 
 	/// <summary>
@@ -129,14 +206,22 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	/// </summary>
 	private void SetOuterTarget(float scale) {
 		float range = frag.OuterAnchor - frag.InnerAnchor;
+		frag.ProcessSpeed = animationT;
 		frag.SetOuterTarget(frag.InnerAnchor + range * scale);
+	}
+
+	/// <summary>
+	/// オーバー、クリック時の外径の倍率
+	/// </summary>
+	public void SetOuterScale(float over, float click) {
+		overOuter = over;
+		clickOuter = click;
 	}
 
 	/// <summary>
 	/// ペアレントモードへ
 	/// </summary>
 	private void SetParentMode() {
-		Debug.Log("SetParentMode");
 		parentMode = true;
 		float max = Mathf.Max(overOuter, clickOuter);
 		SetOuterTarget(max);
@@ -147,7 +232,6 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	/// ペアレントモードの解除
 	/// </summary>
 	public void ResetParentMode() {
-		Debug.Log("ResetParentMode");
 		parentMode = false;
 		SetOuterTarget(normalOuter);
 		lerpColor.SetTarget(normalColor);
@@ -193,9 +277,13 @@ public class UICircleFragment : MonoBehaviour, ICollisionEventHandler {
 	public void OnPointerClick(RaycastHit hit) {
 		if(parentMode) return;
 		if(manager) {
+			manager.FragmentClicked(gameObject);
 			if(manager.Visible(transform)) {
 				//子を表示したのでペアレントモードへ
 				SetParentMode();
+			} else {
+				//子を表示してない場合はUIを非表示に
+				manager.Hide();
 			}
 		}
 	}

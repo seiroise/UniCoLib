@@ -4,14 +4,17 @@ using System;
 namespace Seiro.Scripts.Utility {
 
 	/// <summary>
-	/// floatの補完処理
+	/// floatの線形補間
 	/// </summary>
 	public class LerpFloat {
 
-		private float value;
+		private float value;	//現在値
 		public float Value { get { return value; } }
 
-		private float target;
+		private float target;	//目標値
+
+		private float delta;    //前回との差分(絶対値)
+		public float Delta { get { return delta; } }
 
 		private bool processing;
 		public bool Processing { get { return processing; } }
@@ -57,7 +60,8 @@ namespace Seiro.Scripts.Utility {
 		public bool Update(float t, float epsilon = 0.01f) {
 			if(!processing) return false;
 			value = Mathf.Lerp(value, target, t);
-			if(Mathf.Abs(target - value) < epsilon) {
+			delta = Mathf.Abs(target - value);
+			if(delta < epsilon) {
 				value = target;
 				processing = false;
 			}
