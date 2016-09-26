@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Seiro.Scripts.Geometric.Polygon {
+namespace Seiro.Scripts.Geometric.Polygon.Operation {
 
 	/// <summary>
 	/// 凸多角形の再分割
@@ -54,7 +54,7 @@ namespace Seiro.Scripts.Geometric.Polygon {
 				Vector2 p2 = temp[2];
 
 				//角度を計測
-				float angle = GeomUtil.DegAngle(p1, p0, p2);
+				float angle = GeomUtil.TwoVectorAngle(p1, p0, p2);
 
 				//角度が閾値よりも低いか
 				if(angle < angleThreshold) {

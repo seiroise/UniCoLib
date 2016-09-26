@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Seiro.Scripts.Geometric;
 using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Operation;
 using Seiro.Scripts.Geometric.Diagram;
 using Seiro.Scripts.Graphics.ChainLine;
 

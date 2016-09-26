@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Operation;
 using Seiro.Scripts.Geometric.Diagram;
 using Seiro.Scripts.Geometric.Diagram.Voronoi;
 using Seiro.Scripts.Graphics.ChainLine;

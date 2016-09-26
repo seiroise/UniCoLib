@@ -29,9 +29,19 @@ namespace Seiro.Scripts.Geometric {
 		}
 
 		/// <summary>
-		/// 二つのベクトルがなす角を求める
+		/// 2点の角度を求める(deg)
 		/// </summary>
-		public static float DegAngle (Vector2 from, Vector2 to1, Vector2 to2) {
+		public static float TwoPointAngle(Vector2 p1, Vector2 p2) {
+			float dx = p2.x - p1.x;
+			float dy = p2.y - p1.y;
+			float deg = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+			return deg < 0f ? deg + 360f : deg;
+		}
+
+		/// <summary>
+		/// 二つのベクトルがなす角を求める(deg)
+		/// </summary>
+		public static float TwoVectorAngle (Vector2 from, Vector2 to1, Vector2 to2) {
 			Vector2 v0 = to1 - from, v1 = to2 - from;
 			return Mathf.Acos(Dot(v0, v1) / (v0.magnitude * v1.magnitude)) * Mathf.Rad2Deg;
 		}
@@ -39,15 +49,26 @@ namespace Seiro.Scripts.Geometric {
 		/// <summary>
 		/// radian角を二次元ベクトルに変換
 		/// </summary>
-		public static Vector2 RadToVector2(float radian) {
-			return new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+		public static Vector2 RadToVector2(float rad) {
+			return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
 		}
 
 		/// <summary>
 		/// degree角を二次元ベクトルに変換
 		/// </summary>
-		public static Vector2 DegToVector2(float degree) {
-			return RadToVector2(degree * Mathf.Deg2Rad);
+		public static Vector2 DegToVector2(float deg) {
+			return RadToVector2(deg * Mathf.Deg2Rad);
+		}
+
+		/// <summary>
+		/// 入力平面ベクトルを指定角度だけ回転させる
+		/// </summary>
+		public static Vector2 RotateVector2(Vector2 input, float deg) {
+			Vector2 output = Vector2.zero;
+			float rad = deg * Mathf.Deg2Rad;
+			output.x = input.x * Mathf.Cos(rad) - input.y * Mathf.Sin(rad);
+			output.y = input.x * Mathf.Sin(rad) + input.y * Mathf.Cos(rad);
+			return output;
 		}
 	}
 }

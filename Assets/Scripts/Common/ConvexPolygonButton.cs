@@ -4,6 +4,7 @@ using System.Collections;
 using Seiro.Scripts.Geometric.Diagram.Voronoi;
 using Seiro.Scripts.EventSystems;
 using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Operation;
 
 /// <summary>
 /// 凸多角形をボタンにしてみる

@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using Seiro.Scripts.Graphics;
 
 namespace Seiro.Scripts.Geometric.Polygon {
 
@@ -279,7 +280,7 @@ namespace Seiro.Scripts.Geometric.Polygon {
 		}
 
 		/// <summary>
-		/// Unity上で扱えるメッシュに変換する
+		/// Unity上で扱えるメッシュに変換する(indicesの追加方法が異なる)
 		/// </summary>
 		public Mesh ToAltMesh() {
 			Mesh mesh = new Mesh();
@@ -335,6 +336,42 @@ namespace Seiro.Scripts.Geometric.Polygon {
 			mesh.RecalculateNormals();
 
 			return mesh;
+		}
+
+		/// <summary>
+		/// 簡易メッシュに変換
+		/// </summary>
+		public EasyMesh ToEasyMesh(Color color) {
+			List<Vector3> verts = new List<Vector3>();
+			List<Color> colors = new List<Color>();
+			List<int> indices = new List<int>();
+
+			int size = vertices.Count;
+
+			for(int i = 0; i < size; ++i) {
+				verts.Add(vertices[i]);
+				colors.Add(color);
+			}
+
+			for(int i = 1; i < size; i += 1) {
+				if(rotation == Rotation.CW) {
+					//時計回り
+					indices.Add(0);
+					indices.Add(i);
+					indices.Add((i + 1) % size);
+				} else {
+					//反時計回り
+					indices.Add(0);
+					indices.Add((i + 1) % size);
+					indices.Add(i);
+				}
+			}
+
+			EasyMesh eMesh = new EasyMesh();
+			eMesh.verts = verts.ToArray();
+			eMesh.colors = colors.ToArray();
+			eMesh.indices = indices.ToArray();
+			return eMesh;
 		}
 
 		/// <summary>
@@ -436,12 +473,13 @@ namespace Seiro.Scripts.Geometric.Polygon {
 		/// <summary>
 		/// 正方形の凸多角形インスタンスを作成する
 		/// </summary>
-		public static ConvexPolygon SquarePolygon(float size = 10f) {
+		public static ConvexPolygon SquarePolygon(Vector2 center , float size = 10f) {
+			
 			List<Vector2> vertices = new List<Vector2>();
-			vertices.Add(new Vector2(-size, size));
-			vertices.Add(new Vector2(-size, -size));
-			vertices.Add(new Vector2(size, -size));
-			vertices.Add(new Vector2(size, size));
+			vertices.Add(new Vector2(-size, size) + center);
+			vertices.Add(new Vector2(-size, -size) + center);
+			vertices.Add(new Vector2(size, -size) + center);
+			vertices.Add(new Vector2(size, size) + center);
 
 			return new ConvexPolygon(vertices);
 		}
@@ -449,8 +487,8 @@ namespace Seiro.Scripts.Geometric.Polygon {
 		/// <summary>
 		/// 正方形の凸多角形インスタンスを作成する
 		/// </summary>
-		public static ConvexPolygon SquarePolygon(float size, Vector2 offset) {
-			return null;
+		public static ConvexPolygon SquarePolygon(float size = 10f) {
+			return SquarePolygon(Vector2.zero, size);
 		}
 
 		/// <summary>

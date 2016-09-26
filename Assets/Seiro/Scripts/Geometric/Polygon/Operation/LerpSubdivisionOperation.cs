@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Seiro.Scripts.Geometric.Polygon {
+namespace Seiro.Scripts.Geometric.Polygon.Operation {
 
 	/// <summary>
 	/// 凸多角形の再分割

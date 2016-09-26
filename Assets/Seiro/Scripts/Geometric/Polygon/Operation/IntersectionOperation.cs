@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics.ChainLine;
 
-namespace Seiro.Scripts.Geometric.Polygon {
+namespace Seiro.Scripts.Geometric.Polygon.Operation {
 
 	/// <summary>
 	/// 凸多角形の交差領域抽出
