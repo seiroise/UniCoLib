@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 
 namespace Seiro.Scripts.Utility {
 
@@ -7,6 +6,8 @@ namespace Seiro.Scripts.Utility {
 	/// 関数の箱
 	/// </summary>
 	public class FuncBox {
+
+		#region Camera
 
 		/// <summary>
 		/// 指定カメラのワールド座標に変換したマウス座標を取得する
@@ -16,6 +17,19 @@ namespace Seiro.Scripts.Utility {
 			mousePos.z = cam.transform.position.z;
 			return cam.ScreenToWorldPoint(mousePos);
 		}
+
+		#endregion
+
+		#region Random
+
+		/// <summary>
+		/// ランダムな二次元ベクトルを取得する
+		/// </summary>
+		public static Vector2 RandomVector2(float min = -1f, float max = 1f) {
+			return new Vector2(Random.Range(min, max), Random.Range(min, max));
+		}
+
+		#endregion
 
 	}
 }

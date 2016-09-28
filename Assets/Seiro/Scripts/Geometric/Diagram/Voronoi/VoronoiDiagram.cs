@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics.ChainLine;
-using Seiro.Scripts.Geometric.Polygon.Operation;
+using Seiro.Scripts.Geometric.Polygon;
 
 namespace Seiro.Scripts.Geometric.Diagram.Voronoi {
 

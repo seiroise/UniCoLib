@@ -41,12 +41,13 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private Color color;
 
 		[SerializeField]
-		private List<Vector2> verts;    //頂点
+		private List<Vector2> verts;        //頂点
 		[SerializeField]
-		private List<Edge> edges;       //辺
-		private float totalRange = 0f;  //線の総延長
+		private List<Edge> edges;           //辺
+		private float totalDistance = 0f;   //線の総延長
+		public float TotalDistance { get { return totalDistance; } }
 
-		private EasyMesh cache = null;  //キャッシュ
+		private EasyMesh cache = null;      //キャッシュ
 		public EasyMesh Cache {
 			get {
 				updatedCache = false;
@@ -81,7 +82,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			verts.Add(point);
 			if(verts.Count >= 2) {
 				Edge e = new Edge(verts[verts.Count - 2], point);
-				totalRange += e.range;
+				totalDistance += e.range;
 				edges.Add(e);
 
 				//キャッシュの更新
@@ -106,13 +107,13 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				edges.Insert(index, new Edge(point, verts[index + 1]));
 			} else {
 				//1辺を削除して2辺を挿入
-				totalRange -= edges[index - 1].range;
+				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index - 1);
 				Edge e = new Edge(verts[index - 1], verts[index]);
-				totalRange += e.range;
+				totalDistance += e.range;
 				edges.Insert(index - 1, e);
 				e = new Edge(verts[index], verts[index + 1]);
-				totalRange += e.range;
+				totalDistance += e.range;
 				edges.Insert(index, e);
 			}
 
@@ -134,7 +135,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			//Debug.Log(vertices.Count + " : " + index);
 			if(verts.Count < 2) {
 				edges.Clear();
-				totalRange = 0f;
+				totalDistance = 0f;
 				cache = null;
 				updatedCache = true;
 				return;
@@ -142,19 +143,19 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 			//辺の削除
 			if(index == 0) {
-				totalRange -= edges[index].range;
+				totalDistance -= edges[index].range;
 				edges.RemoveAt(index);
 			} else if(index == verts.Count) {
-				totalRange -= edges[index - 1].range;
+				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index - 1);
 			} else {
 				//二辺を削除して一辺を挿入
-				totalRange -= edges[index].range;
-				totalRange -= edges[index - 1].range;
+				totalDistance -= edges[index].range;
+				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index);
 				edges.RemoveAt(index - 1);
 				Edge e = new Edge(verts[index - 1], verts[index]);
-				totalRange += e.range;
+				totalDistance += e.range;
 				edges.Insert(index - 1, e);
 			}
 
@@ -178,7 +179,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			//辺の変更
 			if(index == 0) {
 				edges[0] = new Edge(point, verts[1]);
-			} else if(index == verts.Count - 1){
+			} else if(index == verts.Count - 1) {
 				edges[index - 1] = new Edge(verts[verts.Count - 2], point);
 			} else {
 				edges[index - 1] = new Edge(verts[index - 1], point);
@@ -197,7 +198,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public void Clear() {
 			verts.Clear();
 			edges.Clear();
-			totalRange = 0f;
+			totalDistance = 0f;
 			cache = null;
 			updatedCache = true;
 		}
@@ -243,24 +244,16 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 部分線の簡易メッシュを作成。(割合指定)
 		/// </summary>
 		public EasyMesh MakeSubLinePer(float startPer, float endPer, float width, Color color) {
-			float start = startPer * totalRange;
-			float end = endPer * totalRange;
+			float start = startPer * totalDistance;
+			float end = endPer * totalDistance;
 			return MakeSubLineRange(start, end, width, color);
 		}
 
 		/// <summary>
 		/// 指定した番号の頂点を取得する
 		/// </summary>
-		public bool GetVertex(int index, out Vector2 v) {
-			
-			//範囲確認
-			if(index < 0 || verts.Count <= index) {
-				v = Vector2.zero;
-				return false;
-			} else {
-				v = verts[index];
-				return true;
-			}
+		public Vector2 GetVertex(int index) {
+			return verts[index];
 		}
 
 		/// <summary>
@@ -274,7 +267,26 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点リストの取得
 		/// </summary>
 		public List<Vector2> GetVertices() {
-			return verts;
+			List<Vector2> temp = new List<Vector2>();
+			for(int i = 0; i < verts.Count; ++i) {
+				temp.Add(verts[i]);
+			}
+			return temp;
+		}
+
+		/// <summary>
+		/// 視点から指定距離の線上の座標を取得する
+		/// </summary>
+		public Vector2 OnLinePoint(float distance) {
+			float sumDis = 0f;
+			for(int i = 0; i < edges.Count; ++i) {
+				Edge e = edges[i];
+				if(sumDis + e.range > distance) {
+					return e.a + e.direction * (distance - sumDis);
+				}
+				sumDis += e.range;
+			}
+			return edges[edges.Count - 1].b;
 		}
 
 		/// <summary>

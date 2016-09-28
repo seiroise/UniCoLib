@@ -3,23 +3,41 @@ using System.Collections.Generic;
 using Seiro.Scripts.Geometric;
 using Seiro.Scripts.Graphics.PolyLine2D;
 using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Graphics;
 
 /// <summary>
 /// 多角形作成エディタ
 /// </summary>
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class PolygonEditor : MonoBehaviour {
 
+	[Header("Line")]
 	public LineEditor lineEditor;
-	public AdditionalLineProponent addtionalLine;
 
+	[Header("Additional Line")]
+	public AdditionalLineProponent addtionalLine;
 	public float snapForce = 0.5f;
 
+	[Header("Effect")]
+	public ParticleSystem particle;
+
+	private MeshFilter mf;
+
 	#region UnityEvent
+
+	private void Awake() {
+		mf = GetComponent<MeshFilter>();
+	}
 
 	private void Start() {
 		//コールバックの設定
 		lineEditor.addVertexCallback = OnAddVertex;
 		lineEditor.removeVertexCallback = OnRemoveVertex;
+		lineEditor.doublePointCallback = OnDoublePointDetection;
+		lineEditor.crossLineCallback = OnCrossLineDetection;
+
+		DisableEditor();
+		EnableEditor();
 	}
 
 	#endregion
@@ -27,43 +45,69 @@ public class PolygonEditor : MonoBehaviour {
 	#region Function
 
 	/// <summary>
-	/// スナップの設定
+	/// エディタの有効化
+	/// </summary>
+	public void EnableEditor() {
+		gameObject.SetActive(true);
+		SetSnaps(Vector2.zero);
+	}
+
+	/// <summary>
+	/// エディタの無効化
+	/// </summary>
+	public void DisableEditor() {
+		gameObject.SetActive(false);
+	}
+
+	/// <summary>
+	/// スナップ(補助線)の設定
 	/// </summary>
 	private void SetSnaps(Vector2 point) {
-		int count = lineEditor.PolyLine.GetVertexCount();
 
 		//スナップの追加
 		addtionalLine.Clear();
-		if(count >= 3) {
-			Vector2 startPoint;
-			lineEditor.PolyLine.GetVertex(0, out startPoint);
-			addtionalLine.AddSnap(10, new PointSnap(startPoint, snapForce), OnSnapEndPoint);
+		int vertsCount = lineEditor.PolyLine.GetVertexCount();
 
-		}
-		//放射スナップ
-		addtionalLine.AddSnap(0, new RadialSnap(point, 8, snapForce));
-		//スマートスナップ
-		SmartSnap();
+		//基本補助線
+		BaseSnap(vertsCount);
+
+		//提示補助線
+		SmartSnap(vertsCount);
 
 		//描画
 		addtionalLine.Draw();
 	}
 
 	/// <summary>
-	/// 頂点の追加履歴からそれっぽい補助線を引く
+	/// 基本補助線の設定
 	/// </summary>
-	private void SmartSnap() {
+	private void BaseSnap(int vertsCount) {
+		
+		//終了スナップ
+		if(vertsCount >= 3) {
+			Vector2 startPoint = lineEditor.PolyLine.GetVertex(0);
+			addtionalLine.AddSnap(10, new PointSnap(startPoint, snapForce), OnSnapEndPoint);
 
-		int count = lineEditor.PolyLine.GetVertexCount();
+		}
+
+		//縦横スナップ
+		addtionalLine.AddSnap(0, new RadialSnap(Vector2.zero, 4, snapForce));
+	}
+
+	/// <summary>
+	/// 提示補助線の設定
+	/// </summary>
+	private void SmartSnap(int vertsCount) {
+
 		PolyLine2D line = lineEditor.PolyLine;
 
-		if(count >= 3) {
+		if(vertsCount >= 3) {
 			//平行線スナップの追加
 			Vector2 p1, p2, p3;
 			Vector2 dir;
-			line.GetVertex(count - 3, out p1);
-			line.GetVertex(count - 2, out p2);
-			line.GetVertex(count - 1, out p3);
+			p1 = line.GetVertex(vertsCount - 3);
+			p2 = line.GetVertex(vertsCount - 2);
+			p3 = line.GetVertex(vertsCount - 1);
 
 			dir = (p2 - p1).normalized * 100f;
 			addtionalLine.AddSnap(0, new LineSegSnap(p3 + dir, p3 - dir, snapForce));
@@ -77,16 +121,28 @@ public class PolygonEditor : MonoBehaviour {
 			if(lineA.GetIntersectionPoint(lineB, ref intersection)) {
 				addtionalLine.AddSnap(5, new PointSnap(intersection, snapForce));
 			}
-		} else if(count == 2) {
+		} else if(vertsCount == 2) {
 			//垂直線スナップの追加
 			Vector2 p1, p2;
 			Vector2 vertical;
-			line.GetVertex(count - 1, out p1);
-			line.GetVertex(count - 2, out p2);
+			p1 = line.GetVertex(vertsCount - 1);
+			p2 = line.GetVertex(vertsCount - 2);
 			vertical = (p1 - p2).normalized * 100f;
 			vertical = GeomUtil.RotateVector2(vertical, 90f);
 			addtionalLine.AddSnap(0, new LineSegSnap(p1 + vertical, p1 - vertical, snapForce));
 		}
+	}
+
+	/// <summary>
+	/// ポリゴンの作成
+	/// </summary>
+	private void MakePolygon() {
+		//頂点の取得
+		List<Vector2> vertices = lineEditor.PolyLine.GetVertices();
+		//最後の頂点を取り除く
+		vertices.RemoveAt(vertices.Count - 1);
+		ConcavePolygon p = new ConcavePolygon(vertices);
+		StartCoroutine(p.CoToEasyMesh(Color.white, OnPolygonUpdate, OnPolygonEnd, 0.025f));
 	}
 
 	#endregion
@@ -110,8 +166,7 @@ public class PolygonEditor : MonoBehaviour {
 		addtionalLine.Clear();
 		if(count != 0) {
 			//スナップの追加
-			Vector2 point;
-			lineEditor.PolyLine.GetVertex(count - 1, out point);
+			Vector2 point = lineEditor.PolyLine.GetVertex(count - 1);
 			OnAddVertex(point);
 		}
 	}
@@ -120,11 +175,37 @@ public class PolygonEditor : MonoBehaviour {
 	/// 終了座標にスナップ
 	/// </summary>
 	private void OnSnapEndPoint() {
-		List<Vector2> vertices = lineEditor.FlushVertices();
-		//最後の頂点を取り除く
-		vertices.RemoveAt(vertices.Count - 1);
-		ConcavePolygon p = new ConcavePolygon(vertices);
-		addtionalLine.Clear();
+		MakePolygon();
+	}
+
+	/// <summary>
+	/// 連続同一点の検出
+	/// </summary>
+	private void OnDoublePointDetection() {
+		Debug.LogError("Double Point!");
+	}
+
+	/// <summary>
+	/// 交差線分の検出
+	/// </summary>
+	private void OnCrossLineDetection() {
+		Debug.LogError("Cross Line!");
+	}
+
+	/// <summary>
+	/// メッシュ化コルーチンの更新コールバック
+	/// </summary>
+	private void OnPolygonUpdate(EasyMesh eMesh) { 
+		mf.mesh = eMesh.ToMesh();
+	}
+
+	/// <summary>
+	/// メッシュ化コルーチンの終了コールバック
+	/// </summary>
+	private void OnPolygonEnd(EasyMesh eMesh) {
+		OnPolygonUpdate(eMesh);
+		//線分の削除
+		lineEditor.FlushVertices();
 	}
 
 	#endregion
