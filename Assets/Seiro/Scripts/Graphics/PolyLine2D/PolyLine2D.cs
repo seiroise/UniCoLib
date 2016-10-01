@@ -37,38 +37,20 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 		#region Parameter
 
-		private float width;
-		private Color color;
-
 		[SerializeField]
-		private List<Vector2> verts;        //頂点
+		private List<Vector2> vertices;     //頂点
 		[SerializeField]
 		private List<Edge> edges;           //辺
 		private float totalDistance = 0f;   //線の総延長
 		public float TotalDistance { get { return totalDistance; } }
 
-		private EasyMesh cache = null;      //キャッシュ
-		public EasyMesh Cache {
-			get {
-				updatedCache = false;
-				return cache;
-			}
-		}
-		private bool updatedCache = false;      //キャッシュの更新
-		public bool UpdatedCache { get { return updatedCache; } }
-		private bool autoUpdateCache = true;    //キャッシュの自動更新
-		public bool AutpUpdateCahce { get { return autoUpdateCache; } set { autoUpdateCache = value; } }
-
 		#endregion
 
 		#region Constructor
 
-		public PolyLine2D(float width, Color color) {
-			verts = new List<Vector2>();
+		public PolyLine2D() {
+			vertices = new List<Vector2>();
 			edges = new List<Edge>();
-
-			this.width = width;
-			this.color = color;
 		}
 
 		#endregion
@@ -78,66 +60,53 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// 頂点の追加
 		/// </summary>
-		public void AddVertex(Vector2 point) {
-			verts.Add(point);
-			if(verts.Count >= 2) {
-				Edge e = new Edge(verts[verts.Count - 2], point);
+		public void Add(Vector2 point) {
+			vertices.Add(point);
+			if(vertices.Count >= 2) {
+				Edge e = new Edge(vertices[vertices.Count - 2], point);
 				totalDistance += e.range;
 				edges.Add(e);
-
-				//キャッシュの更新
-				if(autoUpdateCache) {
-					UpdateCache();
-				}
 			}
 		}
 
 		/// <summary>
 		/// 頂点の挿入
 		/// </summary>
-		public void InsertVertex(int index, Vector2 point) {
+		public void Insert(int index, Vector2 point) {
 			//頂点数が0の時には挿入できない
-			if(index < 0 || verts.Count <= index) return;
+			if(index < 0 || vertices.Count <= index) return;
 
 			//頂点の挿入
-			verts.Insert(index, point);
+			vertices.Insert(index, point);
 
 			//辺の挿入
 			if(index == 0) {
-				edges.Insert(index, new Edge(point, verts[index + 1]));
+				edges.Insert(index, new Edge(point, vertices[index + 1]));
 			} else {
 				//1辺を削除して2辺を挿入
 				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index - 1);
-				Edge e = new Edge(verts[index - 1], verts[index]);
+				Edge e = new Edge(vertices[index - 1], vertices[index]);
 				totalDistance += e.range;
 				edges.Insert(index - 1, e);
-				e = new Edge(verts[index], verts[index + 1]);
+				e = new Edge(vertices[index], vertices[index + 1]);
 				totalDistance += e.range;
 				edges.Insert(index, e);
-			}
-
-			//キャッシュの更新
-			if(autoUpdateCache) {
-				UpdateCache();
 			}
 		}
 
 		/// <summary>
 		/// 頂点の削除
 		/// </summary>
-		public void RemoveVertex(int index) {
+		public void Remove(int index) {
 			//範囲確認
-			if(index < 0 || verts.Count <= index) return;
+			if(index < 0 || vertices.Count <= index) return;
 
 			//頂点の削除
-			verts.RemoveAt(index);
-			//Debug.Log(vertices.Count + " : " + index);
-			if(verts.Count < 2) {
+			vertices.RemoveAt(index);
+			if(vertices.Count < 2) {
 				edges.Clear();
 				totalDistance = 0f;
-				cache = null;
-				updatedCache = true;
 				return;
 			}
 
@@ -145,7 +114,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			if(index == 0) {
 				totalDistance -= edges[index].range;
 				edges.RemoveAt(index);
-			} else if(index == verts.Count) {
+			} else if(index == vertices.Count) {
 				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index - 1);
 			} else {
@@ -154,41 +123,48 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				totalDistance -= edges[index - 1].range;
 				edges.RemoveAt(index);
 				edges.RemoveAt(index - 1);
-				Edge e = new Edge(verts[index - 1], verts[index]);
+				Edge e = new Edge(vertices[index - 1], vertices[index]);
 				totalDistance += e.range;
 				edges.Insert(index - 1, e);
 			}
+		}
 
-			//キャッシュの更新
-			if(autoUpdateCache) {
-				UpdateCache();
-			}
+		/// <summary>
+		/// 最後尾の頂点を削除
+		/// </summary>
+		public void RemoveLast() {
+			Remove(vertices.Count - 1);
 		}
 
 		/// <summary>
 		/// 座標を変更する
 		/// </summary>
-		public void ChangeVertex(int index, Vector2 point) {
+		public void Change(int index, Vector2 point) {
 
 			//範囲確認
-			if(index < 0 || verts.Count <= index) return;
+			if(index < 0 || vertices.Count <= index) return;
 
 			//頂点の変更
-			verts[index] = point;
+			vertices[index] = point;
 
 			//辺の変更
 			if(index == 0) {
-				edges[0] = new Edge(point, verts[1]);
-			} else if(index == verts.Count - 1) {
-				edges[index - 1] = new Edge(verts[verts.Count - 2], point);
+				edges[0] = new Edge(point, vertices[1]);
+			} else if(index == vertices.Count - 1) {
+				edges[index - 1] = new Edge(vertices[vertices.Count - 2], point);
 			} else {
-				edges[index - 1] = new Edge(verts[index - 1], point);
-				edges[index] = new Edge(point, verts[index + 1]);
+				edges[index - 1] = new Edge(vertices[index - 1], point);
+				edges[index] = new Edge(point, vertices[index + 1]);
 			}
+		}
 
-			//キャッシュの更新
-			if(autoUpdateCache) {
-				UpdateCache();
+		/// <summary>
+		/// 頂点を設定する
+		/// </summary>
+		public void SetVertices(List<Vector2> vertices) {
+			Clear();
+			for(int i = 0; i < vertices.Count; ++i) {
+				Add(vertices[i]);
 			}
 		}
 
@@ -196,11 +172,9 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点などのデータを初期化する
 		/// </summary>
 		public void Clear() {
-			verts.Clear();
+			vertices.Clear();
 			edges.Clear();
 			totalDistance = 0f;
-			cache = null;
-			updatedCache = true;
 		}
 
 		/// <summary>
@@ -250,17 +224,24 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		}
 
 		/// <summary>
+		/// 簡易メッシュを作成
+		/// </summary>
+		public EasyMesh MakeLine(float width, Color color) {
+			return EasyMesh.MakePolyLine2D(vertices, width, color);
+		}
+
+		/// <summary>
 		/// 指定した番号の頂点を取得する
 		/// </summary>
 		public Vector2 GetVertex(int index) {
-			return verts[index];
+			return vertices[index];
 		}
 
 		/// <summary>
 		/// 頂点数を取得
 		/// </summary>
 		public int GetVertexCount() {
-			return verts.Count;
+			return vertices.Count;
 		}
 
 		/// <summary>
@@ -268,8 +249,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		public List<Vector2> GetVertices() {
 			List<Vector2> temp = new List<Vector2>();
-			for(int i = 0; i < verts.Count; ++i) {
-				temp.Add(verts[i]);
+			for(int i = 0; i < vertices.Count; ++i) {
+				temp.Add(vertices[i]);
 			}
 			return temp;
 		}
@@ -287,18 +268,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				sumDis += e.range;
 			}
 			return edges[edges.Count - 1].b;
-		}
-
-		/// <summary>
-		/// キャッシュの更新を行う
-		/// </summary>
-		private void UpdateCache() {
-			if(verts.Count < 2 && cache != null) {
-				cache = null;
-			} else {
-				cache = EasyMesh.MakePolyLine2D(verts, width, color);
-			}
-			updatedCache = true;
 		}
 
 		#endregion

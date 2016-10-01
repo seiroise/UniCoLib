@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/LineEditor/Chap1_LineEditor.unity
+- path: Assets/Scenes/LineEditor/Chap2_PolyLine2DEditor.unity
   isLoaded: 1
   isActive: 1

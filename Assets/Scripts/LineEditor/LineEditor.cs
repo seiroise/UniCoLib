@@ -60,8 +60,8 @@ public class LineEditor : MonoBehaviour {
 
 	private void Awake() {
 		mf = GetComponent<MeshFilter>();
-		polyLine = new PolyLine2D(width, color);
-		noticeLine = new PolyLine2D(width, color * 0.5f);
+		polyLine = new PolyLine2D();
+		noticeLine = new PolyLine2D();
 	}
 
 	private void Update() {
@@ -140,7 +140,7 @@ public class LineEditor : MonoBehaviour {
 		if(!draw) return;
 		EasyMesh[] eMeshes = new EasyMesh[2];
 		eMeshes[0] = polyLine.MakeSubLineRange(0f, nowDistance, width, color);
-		eMeshes[1] = noticeLine.Cache;
+		eMeshes[1] = noticeLine.MakeLine(width, color);
 		mf.mesh = EasyMesh.ToMesh(eMeshes);
 		draw = false;
 	}
@@ -155,13 +155,13 @@ public class LineEditor : MonoBehaviour {
 			return false;
 		}
 
-		polyLine.AddVertex(point);
+		polyLine.Add(point);
 
 		//予告線の基点を変更
 		if(noticeLine.GetVertexCount() == 0) {
-			noticeLine.AddVertex(point);
+			noticeLine.Add(point);
 		} else {
-			noticeLine.ChangeVertex(0, point);
+			noticeLine.Change(0, point);
 		}
 
 		//アニメーションの距離更新
@@ -222,7 +222,7 @@ public class LineEditor : MonoBehaviour {
 		if(size == 0) return false;
 
 		Vector2 p1 = polyLine.GetVertex(index);
-		polyLine.RemoveVertex(index);
+		polyLine.Remove(index);
 		--size;
 
 		//予告線と補助線の変更
@@ -230,7 +230,7 @@ public class LineEditor : MonoBehaviour {
 			noticeLine.Clear();
 		} else {
 			Vector2 point = polyLine.GetVertex(size - 1);
-			noticeLine.ChangeVertex(0, point);
+			noticeLine.Change(0, point);
 
 			//エフェクトの生成
 			EmitRemoveEffect(point, p1, density);
@@ -264,9 +264,9 @@ public class LineEditor : MonoBehaviour {
 		if(count <= 0) {
 			noticeLine.Clear();
 		} else if(count == 1) {
-			noticeLine.AddVertex(point);
+			noticeLine.Add(point);
 		} else {
-			noticeLine.ChangeVertex(1, point);
+			noticeLine.Change(1, point);
 		}
 
 		return true;

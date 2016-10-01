@@ -1,43 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Seiro.Scripts.Geometric;
-using Seiro.Scripts.Graphics.PolyLine2D;
+using Seiro.Scripts.Utility;
 using Seiro.Scripts.Geometric.Polygon;
 using Seiro.Scripts.Graphics;
 
 /// <summary>
-/// 多角形作成エディタ
+/// ポリゴンの作成/調整/管理を行う
 /// </summary>
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class PolygonEditor : MonoBehaviour {
 
-	[Header("Line")]
-	public LineEditor lineEditor;
+	[Header("Maker")]
+	public PolygonMaker maker;
 
-	[Header("Additional Line")]
-	public AdditionalLineProponent addtionalLine;
-	public float snapForce = 0.5f;
+	[Header("PolygonObject")]
+	public Transform polyObjParent;					//多角形オブジェクトの親
+	public ConcavePolygonObject polyObjPrefab;		//多角形オブジェクトのプレハブ
+	private List<ConcavePolygonObject> polyObjList;	//多角形オブジェクトリスト
 
-	[Header("Effect")]
-	public ParticleSystem particle;
+	[Header("Camera")]
+	public Camera cam;
 
-	private MeshFilter mf;
+	[Header("UI")]
+	public RadialMenu controlMenu;
 
 	#region UnityEvent
 
 	private void Awake() {
-		mf = GetComponent<MeshFilter>();
+		//初期化
+		polyObjList = new List<ConcavePolygonObject>();
+
+		//各機能の無効化
+		maker.DisableEditor();
 	}
 
 	private void Start() {
 		//コールバックの設定
-		lineEditor.addVertexCallback = OnAddVertex;
-		lineEditor.removeVertexCallback = OnRemoveVertex;
-		lineEditor.doublePointCallback = OnDoublePointDetection;
-		lineEditor.crossLineCallback = OnCrossLineDetection;
+		//機能
+		maker.endCallback = OnDrawEndPolygon;
+		//UI
+		controlMenu.AddClickCallback("Draw", OnDrawButtonClicked);
+	}
 
-		DisableEditor();
-		EnableEditor();
+	private void Update() {
+		if(Input.GetMouseButtonDown(1)) {
+			if(controlMenu != null) {
+				Vector2 mPos = FuncBox.GetMousePosition(cam);
+				controlMenu.Visible(mPos);
+			}
+		}
 	}
 
 	#endregion
@@ -45,167 +55,48 @@ public class PolygonEditor : MonoBehaviour {
 	#region Function
 
 	/// <summary>
-	/// エディタの有効化
+	/// 多角形に追加
 	/// </summary>
-	public void EnableEditor() {
-		gameObject.SetActive(true);
-		SetSnaps(Vector2.zero);
+	private void AddPolygon(ConcavePolygon polygon) {
+		//多角形オブジェクトの生成
+		ConcavePolygonObject polyObj = InstantiatePolyObj();
+		polyObj.SetPolygon(polygon);
+
+		//追加
+		polyObjList.Add(polyObj);
 	}
 
 	/// <summary>
-	/// エディタの無効化
+	/// 多角形オブジェクトの生成
 	/// </summary>
-	public void DisableEditor() {
-		gameObject.SetActive(false);
-	}
-
-	/// <summary>
-	/// スナップ(補助線)の設定
-	/// </summary>
-	private void SetSnaps(Vector2 point) {
-
-		//スナップの追加
-		addtionalLine.Clear();
-		int vertsCount = lineEditor.PolyLine.GetVertexCount();
-
-		//基本補助線
-		BaseSnap(vertsCount);
-
-		//提示補助線
-		SmartSnap(vertsCount);
-
-		//描画
-		addtionalLine.Draw();
-	}
-
-	/// <summary>
-	/// 基本補助線の設定
-	/// </summary>
-	private void BaseSnap(int vertsCount) {
-		
-		//終了スナップ
-		if(vertsCount >= 3) {
-			Vector2 startPoint = lineEditor.PolyLine.GetVertex(0);
-			addtionalLine.AddSnap(10, new PointSnap(startPoint, snapForce), OnSnapEndPoint);
-
-		}
-
-		//縦横スナップ
-		addtionalLine.AddSnap(0, new RadialSnap(Vector2.zero, 4, snapForce));
-	}
-
-	/// <summary>
-	/// 提示補助線の設定
-	/// </summary>
-	private void SmartSnap(int vertsCount) {
-
-		PolyLine2D line = lineEditor.PolyLine;
-
-		if(vertsCount >= 3) {
-			//平行線スナップの追加
-			Vector2 p1, p2, p3;
-			Vector2 dir;
-			p1 = line.GetVertex(vertsCount - 3);
-			p2 = line.GetVertex(vertsCount - 2);
-			p3 = line.GetVertex(vertsCount - 1);
-
-			dir = (p2 - p1).normalized * 100f;
-			addtionalLine.AddSnap(0, new LineSegSnap(p3 + dir, p3 - dir, snapForce));
-			Line lineA = Line.FromPoints(p3, p3 + dir);
-
-			dir = (p3 - p2).normalized * 100f;
-			addtionalLine.AddSnap(0, new LineSegSnap(p1 + dir, p1 - dir, snapForce));
-			Line lineB = Line.FromPoints(p1, p1 + dir);
-
-			Vector2 intersection = Vector2.zero;
-			if(lineA.GetIntersectionPoint(lineB, ref intersection)) {
-				addtionalLine.AddSnap(5, new PointSnap(intersection, snapForce));
-			}
-		} else if(vertsCount == 2) {
-			//垂直線スナップの追加
-			Vector2 p1, p2;
-			Vector2 vertical;
-			p1 = line.GetVertex(vertsCount - 1);
-			p2 = line.GetVertex(vertsCount - 2);
-			vertical = (p1 - p2).normalized * 100f;
-			vertical = GeomUtil.RotateVector2(vertical, 90f);
-			addtionalLine.AddSnap(0, new LineSegSnap(p1 + vertical, p1 - vertical, snapForce));
-		}
-	}
-
-	/// <summary>
-	/// ポリゴンの作成
-	/// </summary>
-	private void MakePolygon() {
-		//頂点の取得
-		List<Vector2> vertices = lineEditor.PolyLine.GetVertices();
-		//最後の頂点を取り除く
-		vertices.RemoveAt(vertices.Count - 1);
-		ConcavePolygon p = new ConcavePolygon(vertices);
-		StartCoroutine(p.CoToEasyMesh(Color.white, OnPolygonUpdate, OnPolygonEnd, 0.025f));
+	private ConcavePolygonObject InstantiatePolyObj() {
+		GameObject gObj = (GameObject)Instantiate(polyObjPrefab.gameObject, Vector3.zero, Quaternion.identity);
+		gObj.transform.SetParent(polyObjParent);
+		gObj.name = polyObjPrefab.name;
+		return gObj.GetComponent<ConcavePolygonObject>();
 	}
 
 	#endregion
 
-	#region Callback
+	#region EditorCallback
 
 	/// <summary>
-	/// 頂点追加
+	/// ポリゴンの完成
 	/// </summary>
-	private void OnAddVertex(Vector2 point) {
-		//スナップの設定
-		SetSnaps(point);
+	private void OnDrawEndPolygon(ConcavePolygon polygon) {
+		//多角形オブジェクトとしてリストに追加
+		AddPolygon(polygon);
 	}
 
-	/// <summary>
-	/// 頂点の削除
-	/// </summary>
-	private void OnRemoveVertex() {
-		int count = lineEditor.PolyLine.GetVertexCount();
+	#endregion
 
-		addtionalLine.Clear();
-		if(count != 0) {
-			//スナップの追加
-			Vector2 point = lineEditor.PolyLine.GetVertex(count - 1);
-			OnAddVertex(point);
-		}
-	}
+	#region UICallback
 
 	/// <summary>
-	/// 終了座標にスナップ
+	/// 描画ボタンのクリック
 	/// </summary>
-	private void OnSnapEndPoint() {
-		MakePolygon();
-	}
-
-	/// <summary>
-	/// 連続同一点の検出
-	/// </summary>
-	private void OnDoublePointDetection() {
-		Debug.LogError("Double Point!");
-	}
-
-	/// <summary>
-	/// 交差線分の検出
-	/// </summary>
-	private void OnCrossLineDetection() {
-		Debug.LogError("Cross Line!");
-	}
-
-	/// <summary>
-	/// メッシュ化コルーチンの更新コールバック
-	/// </summary>
-	private void OnPolygonUpdate(EasyMesh eMesh) { 
-		mf.mesh = eMesh.ToMesh();
-	}
-
-	/// <summary>
-	/// メッシュ化コルーチンの終了コールバック
-	/// </summary>
-	private void OnPolygonEnd(EasyMesh eMesh) {
-		OnPolygonUpdate(eMesh);
-		//線分の削除
-		lineEditor.FlushVertices();
+	private void OnDrawButtonClicked(GameObject gObj) {
+		maker.EnableEditor();
 	}
 
 	#endregion

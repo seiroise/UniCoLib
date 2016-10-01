@@ -102,12 +102,14 @@
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
      <Compile Include="Assets\Scripts\PolygonEditor\PolygonEditor.cs" />
+     <Compile Include="Assets\Scripts\PolygonMaker\PolygonMaker.cs" />
      <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\Chap1_1_RadialMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\RadialMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\UICircleFragment.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\CollisionEventSystem.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\ICollisionEventHandler.cs" />
+     <Compile Include="Assets\Seiro\Scripts\EventSystems\Interface\SUICircle.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\PseudoHalfPlaneGenerator.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagram.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagramGenerator.cs" />
@@ -118,6 +120,7 @@
      <Compile Include="Assets\Seiro\Scripts\Geometric\Line.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\LineSegment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConcavePolygon.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConcavePolygonObject.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConvexPolygon.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\ConvexPolygonObject.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Operation\AngleSubdivisionOperation.cs" />
@@ -134,6 +137,13 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\Circle\CircleFragment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\EasyMesh.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2D.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DAdjuster.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DChecker.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DEditor.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DEditorComponent.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DMaker.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DRenderer.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DSupporter.cs" />
      <Compile Include="Assets\Seiro\Scripts\PerlinNoise\PerlinNoiseD1.cs" />
      <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\FuncBox.cs" />

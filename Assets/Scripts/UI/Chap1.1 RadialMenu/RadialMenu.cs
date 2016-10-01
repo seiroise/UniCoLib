@@ -33,10 +33,6 @@ public class RadialMenu : MonoBehaviour {
 		clickCallbackDic = new Dictionary<string, Action<GameObject>>();
 	}
 
-	private void OnGUI() {
-		GUILayout.Label("StackCount = " + stack.Count);
-	}
-
 	#endregion
 
 	#region Function
@@ -142,6 +138,14 @@ public class RadialMenu : MonoBehaviour {
 	/// 表示
 	/// </summary>
 	public void Visible() {
+		Visible(transform);
+	}
+
+	/// <summary>
+	/// 座標を指定して表示
+	/// </summary>
+	public void Visible(Vector2 point) {
+		transform.localPosition = point;
 		Visible(transform);
 	}
 
