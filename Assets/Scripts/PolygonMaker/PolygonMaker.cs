@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Seiro.Scripts.Geometric;
 using Seiro.Scripts.Graphics.PolyLine2D;
-using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Concave;
 using Seiro.Scripts.Graphics;
 
 /// <summary>

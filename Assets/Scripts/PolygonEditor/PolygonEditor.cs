@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Seiro.Scripts.Utility;
-using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Concave;
 using Seiro.Scripts.Graphics;
 
 /// <summary>

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Convex;
 using Seiro.Scripts.Geometric.Polygon.Operation;
 
 

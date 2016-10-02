@@ -11,35 +11,32 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 	/// </summary>
 	public class PolyLine2DMaker : PolyLine2DEditorComponent {
 
-		public enum EndType {
+		public enum ExitType {
 			Key,
 			StartAndEnd
 		}
 
-		[Serializable]
-		public class makeEndEvent : UnityEvent<List<Vector2>> { }
-
-		[Header("Input Parameter")]
+		[Header("InputParameter")]
 		public int addButton = 0;                   //追加ボタン
 		public int removeButton = 1;                //削除ボタン
 		public KeyCode clearKey = KeyCode.Escape;   //全削除/戻るボタン
 		private const float EPSILON = 0.01f;        //マウス座標の移動差分の検出閾値
 
-		[Header("End Type")]
-		public EndType endType = EndType.Key;       //終了条件
-		public KeyCode endKey = KeyCode.Return;     //終了ボタン
-		private bool end = false;                   //終了
+		[Header("ExitConditions")]
+		public ExitType exitType = ExitType.Key;    //終了パターン
+		public KeyCode exitKey = KeyCode.Return;    //終了キー
+		private bool exit = false;                  //終了
 
-		[Header("Line Parameter")]
+		[Header("LineParameter")]
 		public float width = 0.1f;
 		public Color color = Color.white;
 
 		[Header("Callback")]
-		public makeEndEvent onMakeEnd;
+		public ExitEvent onExit;                    //終了コールバック
 
 		//ModuleComponent
-		private PolyLine2DRenderer renderer;		//描画担当
-		private PolyLine2DSupporter supporter;		//補助担当
+		private PolyLine2DRenderer renderer;        //描画担当
+		private PolyLine2DSupporter supporter;      //補助担当
 
 		#region UnityEvent
 
@@ -62,7 +59,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 			//スナップの設定
 			SetSnap();
-			end = false;
+			exit = false;
 		}
 
 		public override void Disable() {
@@ -114,10 +111,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				mPoint = snapPoint;
 				//終了スナップ確認
 				editor.supporter.SnapCallback();
-				if(end) {
+				if(exit) {
 					//追加
 					renderer.Add(mPoint);
-					End();
+					Exit();
 					return;
 				}
 			}
@@ -132,7 +129,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// 削除
 		/// </summary>
-		private void Remove() {	
+		private void Remove() {
 			//削除
 			renderer.RemoveLast();
 			//スナップの設定
@@ -147,8 +144,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 			//頂点数が0確認
 			if(renderer.GetVertexCount() == 0) {
-				//無効化
-				Disable();
+				//終了
+				Exit();
 			} else {
 				//全削除
 				renderer.Clear();
@@ -200,7 +197,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			supporter.Clear();
 
 			//終了スナップ
-			if(endType == EndType.StartAndEnd) {
+			if(exitType == ExitType.StartAndEnd) {
 				if(count >= 2) {
 					Vector2 start = vertices[0];
 					supporter.AddSnap(10, new PointSnap(start, snapForce), OnSnapEndPoint);
@@ -249,9 +246,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// 終了
 		/// </summary>
-		private void End() {
+		private void Exit() {
+			List<Vector2> vertices = renderer.GetVertices();
 			//コールバック
-			onMakeEnd.Invoke(renderer.GetVertices());
+			onExit.Invoke(vertices.Count == 0 ? null: vertices);
 		}
 
 		#endregion
@@ -262,7 +260,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// スナップの終了コールバック
 		/// </summary>
 		private void OnSnapEndPoint() {
-			end = true;
+			exit = true;
 		}
 
 		#endregion

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics;
 
-namespace Seiro.Scripts.Geometric.Polygon {
+namespace Seiro.Scripts.Geometric.Polygon.Concave {
 
 	/// <summary>
 	/// 凹多角形

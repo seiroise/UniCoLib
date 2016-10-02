@@ -19,10 +19,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public float density = 1f;
 		public float speed = 0.5f;
 
-		private PolyLine2D polyLine;    	//ポリライン
-		private PolyLine2D subPolyLine;		//サブライン
+		private PolyLine2D mainLine;    //ポリライン
+		private PolyLine2D subLine;		//サブライン
 		private MeshFilter mf;
-		private bool draw;					//描画フラグ
+		private bool draw;				//描画フラグ
 
 		#region UnityEvent
 
@@ -36,8 +36,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 		public override void Initialize(PolyLine2DEditor editor) {
 			base.Initialize(editor);
-			polyLine = new PolyLine2D();
-			subPolyLine = new PolyLine2D();
+			mainLine = new PolyLine2D();
+			subLine = new PolyLine2D();
 			mf = GetComponent<MeshFilter>();
 		}
 
@@ -51,8 +51,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private void Draw() {
 			if(!draw) return;
 			EasyMesh[] eMeshes = new EasyMesh[2];
-			eMeshes[0] = polyLine.MakeLine(width, color);
-			eMeshes[1] = subPolyLine.MakeLine(width, color * 0.5f);
+			eMeshes[0] = mainLine.MakeLine(width, color);
+			eMeshes[1] = subLine.MakeLine(width, color * 0.5f);
 			mf.mesh = EasyMesh.ToMesh(eMeshes);
 			draw = false;
 		}
@@ -92,7 +92,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 
 		#endregion
 
-		#region PublicFunction
+		#region MainLine
 
 		/// <summary>
 		/// 頂点の設定
@@ -108,18 +108,18 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点の取得
 		/// </summary>
 		public List<Vector2> GetVertices() {
-			return polyLine.GetVertices();
+			return mainLine.GetVertices();
 		}
 
 		/// <summary>
 		/// 全ての頂点の消去
 		/// </summary>
 		public void Clear() {
-			int count = polyLine.GetVertexCount();
+			int count = mainLine.GetVertexCount();
 			for(int i = 0; i < count; ++i) {
 				RemoveLast();
 			}
-			subPolyLine.Clear();
+			subLine.Clear();
 			mf.mesh = null;
 		}
 
@@ -127,12 +127,20 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点の追加
 		/// </summary>
 		public void Add(Vector2 point) {
-			polyLine.Add(point);
+			mainLine.Add(point);
 			//エフェクトの生成
-			int count = polyLine.GetVertexCount();
+			int count = mainLine.GetVertexCount();
 			if(count > 1) {
-				EmitEffect(effectParticle, polyLine.GetVertex(count - 2), point, density);
+				EmitEffect(effectParticle, mainLine.GetVertex(count - 2), point, density);
 			}
+			draw = true;
+		}
+
+		/// <summary>
+		/// 頂点の挿入
+		/// </summary>
+		public void Insert(int index, Vector2 point) {
+			mainLine.Insert(index, point);
 			draw = true;
 		}
 
@@ -140,7 +148,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点の消去
 		/// </summary>
 		public void Remove(int index) {
-			polyLine.Remove(index);
+			mainLine.Remove(index);
 			draw = true;
 		}
 
@@ -149,11 +157,19 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		public void RemoveLast() {
 			//エフェクトの生成
-			int count = polyLine.GetVertexCount();
+			int count = mainLine.GetVertexCount();
 			if(count > 1) {
-				EmitEffect(effectParticle, polyLine.GetVertex(count - 2), polyLine.GetVertex(count - 1), density);
+				EmitEffect(effectParticle, mainLine.GetVertex(count - 2), mainLine.GetVertex(count - 1), density);
 			}
-			polyLine.Remove(count - 1);
+			mainLine.Remove(count - 1);
+			draw = true;
+		}
+
+		/// <summary>
+		/// 頂点の変更
+		/// </summary>
+		public void Change(int index, Vector2 point) {
+			mainLine.Change(index, point);
 			draw = true;
 		}
 
@@ -161,26 +177,38 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点数
 		/// </summary>
 		public int GetVertexCount() {
-			return polyLine.GetVertexCount();
+			return mainLine.GetVertexCount();
 		}
 
 		/// <summary>
 		/// 頂点の取得
 		/// </summary>
 		public Vector2 GetVertex(int index) {
-			return polyLine.GetVertex(index);
+			return mainLine.GetVertex(index);
 		}
+
+		#endregion
+
+		#region SubLine
 
 		/// <summary>
 		/// サブの頂点設定
 		/// </summary>
 		public void SetSubVertices(params Vector2[] vertices) {
-			subPolyLine.Clear();
+			subLine.Clear();
 			if(vertices != null) {
 				for(int i = 0; i < vertices.Length; ++i) {
-					subPolyLine.Add(vertices[i]);
+					subLine.Add(vertices[i]);
 				}
 			}
+			draw = true;
+		}
+
+		/// <summary>
+		/// サブの全ての頂点を消去
+		/// </summary>
+		public void ClearSubLine() {
+			subLine.Clear();
 			draw = true;
 		}
 

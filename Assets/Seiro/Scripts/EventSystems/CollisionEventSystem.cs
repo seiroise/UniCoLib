@@ -21,12 +21,12 @@ namespace Seiro.Scripts.EventSystems {
 		private Collider prevCollider;
 		private RaycastHit hitInfo;
 		private const float EPSILON = 0.001f;
-		private Dictionary<Collider, ICollisionEventHandler> cache;
+		private Dictionary<Collider, ICollisionEventHandler[]> cache;
 
 		#region UnityEvent
 
 		private void Awake() {
-			cache = new Dictionary<Collider, ICollisionEventHandler>();
+			cache = new Dictionary<Collider, ICollisionEventHandler[]>();
 		}
 
 		private void Update() {
@@ -78,6 +78,7 @@ namespace Seiro.Scripts.EventSystems {
 					UpCollider(downCollider);
 					ClickCollider(downCollider);
 				}
+				downCollider = null;
 			}
 			if(Input.GetMouseButtonDown(mouseButton)) {
 				if(prevCollider != null) {
@@ -92,9 +93,11 @@ namespace Seiro.Scripts.EventSystems {
 		/// </summary>
 		private void EnterCollider(Collider col) {
 			//コンポーネントの取得
-			ICollisionEventHandler handler = GetHandler(col);
-			if(handler != null) {
-				handler.OnPointerEnter(hitInfo);
+			ICollisionEventHandler[] handlers = GetHandlers(col);
+			if(handlers != null) {
+				foreach(var e in handlers) {
+					e.OnPointerEnter(hitInfo);
+				}
 			}
 			prevCollider = col;
 		}
@@ -104,9 +107,11 @@ namespace Seiro.Scripts.EventSystems {
 		/// </summary>
 		private void ExitCollider(Collider col) {
 			//コンポーネントの取得
-			ICollisionEventHandler handler = GetHandler(col);
-			if(handler != null) {
-				handler.OnPointerExit(hitInfo);
+			ICollisionEventHandler[] handlers = GetHandlers(col);
+			if(handlers != null) {
+				foreach(var e in handlers) {
+					e.OnPointerExit(hitInfo);
+				}
 			}
 			prevCollider = null;
 		}
@@ -116,9 +121,11 @@ namespace Seiro.Scripts.EventSystems {
 		/// </summary>
 		private void DownCollider(Collider col) {
 			//コンポーネントの取得
-			ICollisionEventHandler handler = GetHandler(col);
-			if(handler != null) {
-				handler.OnPointerDown(hitInfo);
+			ICollisionEventHandler[] handlers = GetHandlers(col);
+			if(handlers != null) {
+				foreach(var e in handlers) {
+					e.OnPointerDown(hitInfo);
+				}
 			}
 		}
 
@@ -127,9 +134,11 @@ namespace Seiro.Scripts.EventSystems {
 		/// </summary>
 		private void UpCollider(Collider col) {
 			//コンポーネントの取得
-			ICollisionEventHandler handler = GetHandler(col);
-			if(handler != null) {
-				handler.OnPointerUp(hitInfo);
+			ICollisionEventHandler[] handlers = GetHandlers(col);
+			if(handlers != null) {
+				foreach(var e in handlers) {
+					e.OnPointerUp(hitInfo);
+				}
 			}
 		}
 
@@ -137,27 +146,29 @@ namespace Seiro.Scripts.EventSystems {
 		/// コライダー範囲でのクリック
 		/// </summary>
 		private void ClickCollider(Collider col) {
-			ICollisionEventHandler handler = GetHandler(downCollider);
-			if(handler != null) {
-				handler.OnPointerClick(hitInfo);
+			ICollisionEventHandler[] handlers = GetHandlers(downCollider);
+			if(handlers != null) {
+				foreach(var e in handlers) {
+					e.OnPointerClick(hitInfo);
+				}
 			}
 		}
 
 		/// <summary>
 		/// コライダーからハンドラーを取得
 		/// </summary>
-		private ICollisionEventHandler GetHandler(Collider col) {
+		private ICollisionEventHandler[] GetHandlers(Collider col) {
 			if(col == null) return null;
 			//キャッシュを確認
 			if(cache.ContainsKey(col)) {
 				return cache[col];
 			}
 			//キャッシュになければ追加
-			ICollisionEventHandler handler = col.GetComponent<ICollisionEventHandler>();
-			if(handler != null) {
-				cache.Add(col, handler);
+			ICollisionEventHandler[] handlers = col.GetComponents<ICollisionEventHandler>();
+			if(handlers != null) {
+				cache.Add(col, handlers);
 			}
-			return handler;
+			return handlers;
 		}
 
 		#endregion

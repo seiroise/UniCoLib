@@ -2,7 +2,7 @@
 using System;
 using Seiro.Scripts.Graphics;
 
-namespace Seiro.Scripts.Geometric.Polygon {
+namespace Seiro.Scripts.Geometric.Polygon.Concave {
 
 	/// <summary>
 	/// 凹多角形オブジェクト

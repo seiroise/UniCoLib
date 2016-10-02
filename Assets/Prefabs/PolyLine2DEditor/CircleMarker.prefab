@@ -24,7 +24,7 @@ GameObject:
   - 64: {fileID: 64000011784058872}
   - 114: {fileID: 114000012474244260}
   m_Layer: 0
-  m_Name: SUICircle
+  m_Name: CircleMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,28 +99,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000013793627528}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c209d14abe8a499fa68a3c30c79b733, type: 3}
+  m_Script: {fileID: 11500000, guid: eaeb816a5002447b2acb5340910ba202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   startAngle: 0
   endAngle: 360
   innerRadius: 0
-  outerRadius: 0.2
+  outerRadius: 0.25
   density: 1
-  rangeIndicate: 0
-  radiusIndicate: 3
-  indicateT: 10
+  rangeIndicate: 3
+  radiusIndicate: 0
+  indicateT: 15
   interactionT: 10
   normalColor: {r: 0.691, g: 0.7180657, b: 1, a: 1}
   overColor: {r: 0, g: 0.08965492, b: 1, a: 1}
   clickColor: {r: 0.250344, g: 0.28832844, b: 0.684, a: 1}
-  overOuter: 2
-  clickOuter: 1.5
+  overOuter: 1.3
+  clickOuter: 1.1
   lerpSprite: {fileID: 0}
   adjustSpriteScale: 0
   adjustScale: 1
-  onClick:
+  onPointerClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Seiro.Scripts.EventSystems.Interface.SUICircle+MarkerClickEvent, Assembly-CSharp,
-      Version=0.1.6118.2222, Culture=neutral, PublicKeyToken=null
+    m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
+      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
+      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+  onPointerUp:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
+      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null

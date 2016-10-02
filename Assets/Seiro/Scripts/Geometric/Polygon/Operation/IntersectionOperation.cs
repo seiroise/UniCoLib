@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics.ChainLine;
+using Seiro.Scripts.Geometric.Polygon.Convex;
 
 namespace Seiro.Scripts.Geometric.Polygon.Operation {
 

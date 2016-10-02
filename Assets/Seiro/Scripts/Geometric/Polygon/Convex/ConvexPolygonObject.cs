@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System;
-using Seiro.Scripts.Geometric.Polygon;
 
-namespace Seiro.Scripts.Geometric.Diagram.Voronoi {
+namespace Seiro.Scripts.Geometric.Polygon.Convex {
 
 	/// <summary>
 	/// 凸多角形オブジェクト

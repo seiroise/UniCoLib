@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Seiro.Scripts.EventSystems.Interface;
+using Seiro.Scripts.EventSystems.Interface.Circle;
 
 namespace Seiro.Scripts.Graphics.PolyLine2D {
 
@@ -19,22 +19,32 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public Color color = Color.white;
 
 		[Header("Marker")]
-		public SUICircle markerPrefab;
-		public Transform markerParent;
-		public Color adjust;
-		public Color divide;
+		public SUICirclePool markerPool;
 		private List<SUICircle> markers;
+		public Transform markerParent;
+		public Color vertex;
+		public Color midpoint;
 		private const float EPSILON = 0.01f;
 
-		//ModuleComponent
-		private PolyLine2DRenderer renderer;	//描画担当
-		private PolyLine2DSupporter supporter;	//補助担当
+		[Header("ExitConditions")]
+		public KeyCode exitKey = KeyCode.Return;    //終了キー
 
-		//VertexMove
-		private List<Vector2> vertices;	//頂点
-		private int vertsCount;			//頂点数
-		private int selectIndex;		//選択番号
-		private bool adjusting = false;	//調整中
+		[Header("Callback")]
+		public ExitEvent onExit;                //終了コールバック
+
+		//Module Component
+		private PolyLine2DRenderer renderer;    //描画担当
+		private PolyLine2DSupporter supporter;  //補助担当
+
+		//Adjust
+		private List<Vector2> adjustVertices;   //調整頂点群
+		private int adjustVertsCount;           //調整頂点群の数
+		private int adjustIndex;                //調整頂点番号
+		private bool adjusting = false;         //調整中
+
+		//Connected
+		private bool connected;                 //先頭と末尾の接続
+		private bool adjustConnected;           //接続点の調整
 
 		#region UnityEvent
 
@@ -58,9 +68,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		#region Function
 
 		/// <summary>
-		/// 調整する頂点群を設定する
+		/// 調整する頂点群を設定する。connectedは先頭と末尾の接続しているか
 		/// </summary>
-		public void SetVertices(List<Vector2> vertices) {
+		public void SetVertices(List<Vector2> vertices, bool connected = false) {
+			this.connected = connected;
 			//マーカーの表示
 			IndicateMarkers(vertices);
 			//線の表示
@@ -71,9 +82,17 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点リストから調整用マーカーの表示
 		/// </summary>
 		private void IndicateMarkers(List<Vector2> vertices) {
+
 			int count = vertices.Count;
+
+			//中点マーカー
+			for(int i = 0; i < count - 1; ++i) {
+				markers.Add(InstantiateMidpointMarker((i + 1).ToString(), vertices[i], vertices[i + 1]));
+			}
+
+			//頂点マーカー
+			if(connected) --count;
 			for(int i = 0; i < count; ++i) {
-				//調整用マーカー
 				markers.Add(InstantiateVertexMarker(i.ToString(), vertices[i]));
 			}
 		}
@@ -91,9 +110,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 調整用マーカーの生成
 		/// </summary>
 		private SUICircle InstantiateMarker(Vector2 point) {
-			GameObject gObj = (GameObject)Instantiate(markerPrefab.gameObject, point, Quaternion.identity);
-			gObj.transform.SetParent(markerParent);
-			return gObj.GetComponent<SUICircle>();
+			return markerPool.PopItem(point);
 		}
 
 		/// <summary>
@@ -102,8 +119,26 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private SUICircle InstantiateVertexMarker(string markerName, Vector2 point) {
 			SUICircle marker = InstantiateMarker(point);
 			marker.name = markerName;
+			//marker.normalColor = vertex;
+			marker.SetColor(vertex);
 			marker.Visible();
-			marker.onClick.AddListener(OnVertexMarkerClicked);
+			marker.onPointerDown.RemoveAllListeners();
+			marker.onPointerDown.AddListener(OnVertexMarkerDown);
+			return marker;
+		}
+
+		/// <summary>
+		/// 中点調整用マーカーの生成
+		/// </summary>
+		private SUICircle InstantiateMidpointMarker(string markerName, Vector2 p1, Vector2 p2) {
+			Vector2 point = (p2 - p1) * 0.5f + p1;
+			SUICircle marker = InstantiateMarker(point);
+			marker.name = markerName;
+			//marker.normalColor = midpoint;
+			marker.SetColor(midpoint);
+			marker.Visible();
+			marker.onPointerDown.RemoveAllListeners();
+			marker.onPointerDown.AddListener(OnMidpointMarkerDown);
 			return marker;
 		}
 
@@ -111,10 +146,18 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 入力確認
 		/// </summary>
 		private void InputCheck() {
+
+			if(Input.GetKeyDown(exitKey)) {
+				Exit();
+			}
+
 			if(adjusting) {
 				Vector2 mDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 				if(mDelta.magnitude > EPSILON) {
 					SetNoticeLine();
+				}
+				if(Input.GetMouseButtonUp(0)) {
+					EndVertexMove(editor.GetMousePoint());
 				}
 			}
 		}
@@ -131,11 +174,76 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			if(editor.supporter.Snap(mPoint, out snapPoint)) {
 				mPoint = snapPoint;
 			}
-			Vector2 p1 = vertices[(selectIndex + vertsCount - 1) % vertsCount];
-			Vector2 p2 = vertices[(selectIndex + 1) % vertsCount];
 
 			//補助線の描画
-			renderer.SetSubVertices(p1, mPoint, p2);
+			if(adjustConnected) {
+				//接続点の変更
+				Vector2 p1 = adjustVertices[1];
+				Vector2 p2 = adjustVertices[adjustVertsCount - 2];
+				renderer.SetSubVertices(p1, mPoint, p2);
+			} else {
+				Vector2 p1 = adjustVertices[(adjustIndex + adjustVertsCount - 1) % adjustVertsCount];
+				Vector2 p2 = adjustVertices[(adjustIndex + 1) % adjustVertsCount];
+				renderer.SetSubVertices(p1, mPoint, p2);
+			}
+		}
+
+		/// <summary>
+		/// 頂点移動開始
+		/// </summary>
+		private void StartVertexMove(List<Vector2> vertices, int index) {
+			adjustVertices = vertices;
+			adjustVertsCount = adjustVertices.Count;
+			adjustIndex = index;
+
+			//接続している場合
+			if(connected) {
+				adjustConnected = (index == 0 || index == adjustVertsCount - 1);
+			}
+			HideMarkers();
+			SetNoticeLine();
+			adjusting = true;
+		}
+
+		/// <summary>
+		/// 頂点移動終了
+		/// </summary>
+		private void EndVertexMove(Vector2 movedPoint) {
+			//頂点座標の変更
+			if(adjustConnected) {
+				int prevLast = adjustVertsCount - 1;
+				renderer.Change(0, movedPoint);
+				renderer.Change(prevLast, movedPoint);
+				adjustVertices[0] = movedPoint;
+				adjustVertices[prevLast] = movedPoint;
+			} else {
+				renderer.Change(adjustIndex, movedPoint);
+				adjustVertices[adjustIndex] = movedPoint;
+			}
+
+			renderer.ClearSubLine();
+			IndicateMarkers(adjustVertices);
+			adjusting = false;
+		}
+
+		/// <summary>
+		/// 頂点の挿入
+		/// </summary>
+		private void InsertVertex(int index, Vector2 point) {
+			renderer.Insert(index, point);
+			StartVertexMove(renderer.GetVertices(), index);
+		}
+
+		/// <summary>
+		/// 終了
+		/// </summary>
+		private void Exit() {
+			if(adjusting) {
+				adjusting = false;
+			}
+			HideMarkers();
+			//コールバック
+			onExit.Invoke(renderer.GetVertices());
 		}
 
 		#endregion
@@ -143,14 +251,23 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		#region Callback
 
 		/// <summary>
-		/// 頂点マーカーのクリック
+		/// 頂点マーカーの押下
 		/// </summary>
-		private void OnVertexMarkerClicked(GameObject gObj) {
-			if(!int.TryParse(gObj.name, out selectIndex)) return;
-			vertices = renderer.GetVertices();
-			vertsCount = vertices.Count;
-			HideMarkers();
-			adjusting = true;
+		private void OnVertexMarkerDown(GameObject gObj) {
+			int index;
+			if(!int.TryParse(gObj.name, out index)) return;
+			//調整開始
+			StartVertexMove(renderer.GetVertices(), index);
+		}
+
+		/// <summary>
+		/// 中点マーカーの押下
+		/// </summary>
+		private void OnMidpointMarkerDown(GameObject gObj) {
+			int index;
+			if(!int.TryParse(gObj.name, out index)) return;
+			//頂点の挿入
+			InsertVertex(index, gObj.transform.localPosition);
 		}
 
 		#endregion

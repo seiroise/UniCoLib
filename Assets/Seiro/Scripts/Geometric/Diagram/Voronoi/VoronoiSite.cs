@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System;
+using Seiro.Scripts.Geometric.Polygon.Convex;
 
 namespace Seiro.Scripts.Geometric.Diagram.Voronoi {
 

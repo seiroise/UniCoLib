@@ -5,17 +5,18 @@ using Seiro.Scripts.Utility;
 using Seiro.Scripts.Graphics.Circle;
 using Seiro.Scripts.Geometric;
 using Seiro.Scripts.Graphics;
+using Seiro.Scripts.ObjectPool;
 
-namespace Seiro.Scripts.EventSystems.Interface {
+namespace Seiro.Scripts.EventSystems.Interface.Circle {
 
 	/// <summary>
 	/// 円形のインタフェース
 	/// </summary>
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-	public class SUICircle : MonoBehaviour, ICollisionEventHandler {
+	public class SUICircle : MonoBehaviour, ICollisionEventHandler, IMonoPoolItem<SUICircle> {
 
 		[Serializable]
-		public class MarkerClickEvent : UnityEvent<GameObject> { }
+		public class MarkerEvent : UnityEvent<GameObject> { }
 
 		private CircleFragment circle;
 		private MeshFilter mf;
@@ -53,7 +54,9 @@ namespace Seiro.Scripts.EventSystems.Interface {
 		public float adjustScale = 1f;
 
 		[Header("Callback")]
-		public MarkerClickEvent onClick;
+		public MarkerEvent onPointerClick;
+		public MarkerEvent onPointerDown;
+		public MarkerEvent onPointerUp;
 
 		//フラグ
 		private bool pointerOver = false;
@@ -72,7 +75,6 @@ namespace Seiro.Scripts.EventSystems.Interface {
 			circle = new CircleFragment();
 
 			lerpColor = new LerpColor();
-			lerpColor.SetValues(normalColor, normalColor);
 
 			if(lerpSprite) {
 				lerpSprite.transform.localScale = Vector3.zero;
@@ -203,6 +205,14 @@ namespace Seiro.Scripts.EventSystems.Interface {
 			visibled = false;
 		}
 
+		public void SetColor(Color color) {
+			normalColor = color;
+			overColor = color;
+			clickColor = color;
+
+			lerpColor.SetValues(color, color);
+		}
+
 		/// <summary>
 		/// 倍率を指定して外径を設定
 		/// </summary>
@@ -217,24 +227,32 @@ namespace Seiro.Scripts.EventSystems.Interface {
 		#region ICollisionEventHandler
 
 		public void OnPointerEnter(RaycastHit hit) {
+			if(!visibled) return;
 			lerpColor.SetTarget(overColor);
 			SetOuterTarget(overOuter);
 			pointerOver = true;
 		}
 
 		public void OnPointerExit(RaycastHit hit) {
+			if(!visibled) return;
 			lerpColor.SetTarget(normalColor);
 			SetOuterTarget(normalOuter);
 			pointerOver = false;
 		}
 
 		public void OnPointerDown(RaycastHit hit) {
+			if(!visibled) return;
 			lerpColor.SetTarget(clickColor);
 			SetOuterTarget(clickOuter);
+
+			//イベント発火
+			onPointerDown.Invoke(gameObject);
+
 			pointerDown = true;
 		}
 
 		public void OnPointerUp(RaycastHit hit) {
+			if(!visibled) return;
 			if(pointerOver) {
 				lerpColor.SetTarget(overColor);
 				SetOuterTarget(overOuter);
@@ -242,12 +260,29 @@ namespace Seiro.Scripts.EventSystems.Interface {
 				lerpColor.SetTarget(normalColor);
 				SetOuterTarget(normalOuter);
 			}
+
+			//イベント発火
+			onPointerUp.Invoke(gameObject);
+
 			pointerDown = false;
 		}
 
 		public void OnPointerClick(RaycastHit hit) {
+			if(!visibled) return;
 			//イベント発火
-			onClick.Invoke(gameObject);
+			onPointerClick.Invoke(gameObject);
+		}
+
+		#endregion
+
+		#region IMonoPoolItem
+
+		public void Activate() {
+			Visible();
+		}
+
+		public SUICircle GetThis() {
+			return this;
 		}
 
 		#endregion

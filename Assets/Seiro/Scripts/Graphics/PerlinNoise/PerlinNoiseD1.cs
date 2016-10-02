@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Seiro.Scripts.PerlinNoise {
+namespace Seiro.Scripts.Graphics.PerlinNoise {
 
 	/// <summary>
 	/// 一次元パーリンノイズ

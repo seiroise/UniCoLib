@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics.ChainLine;
 using Seiro.Scripts.Graphics.ChainLine.StandardUpdater;
-using Seiro.Scripts.PerlinNoise;
+using Seiro.Scripts.Graphics.PerlinNoise;
 
 /// <summary>
 /// チャプター2

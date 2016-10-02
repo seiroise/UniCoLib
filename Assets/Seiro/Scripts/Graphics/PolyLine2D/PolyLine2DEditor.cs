@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using System;
 using System.Collections.Generic;
 using Seiro.Scripts.Utility;
 
@@ -24,6 +26,9 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		[Header("Camera")]
 		public Camera cam;
 
+		[Header("Callback")]
+		public ExitEvent onExit;		//MakerとAdjusterの終了イベント
+
 		private PolyLine2D polyLine;	//みんなでこれを編集する
 
 		#region UnityEvent
@@ -47,11 +52,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			nowState = null;
 		}
 
-		private void Start() {
-			//テスト:Makerを有効化
-			EnableMaker();
-		}
-
 		#endregion
 
 		#region Function
@@ -61,23 +61,29 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		public void EnableMaker() {
 			//現在の状態を無効化
-			if(nowState != null) {
+			if(nowState == maker) {
+				return;
+			} else if(nowState != null) {
 				nowState.Disable();
 			}
+
 			nowState = maker;
 
 			//Makerを有効化
 			maker.Enable();
 			//終了コールバックの設定
-			maker.onMakeEnd.AddListener(OnMakeEnd);
+			maker.onExit.RemoveAllListeners();
+			maker.onExit.AddListener(OnExit);
 		}
 
 		/// <summary>
 		/// Adjusterの有効化
 		/// </summary>
-		public void EnableAdjuster(List<Vector2> vertices) {
+		public void EnableAdjuster(List<Vector2> vertices, bool connected) {
 			//現在の状態を無効化
-			if(nowState != null) {
+			if(nowState == adjuster) {
+				return;
+			} else if(nowState != null) {
 				nowState.Disable();
 			}
 			nowState = adjuster;
@@ -85,7 +91,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			//Adjusterを有効化
 			adjuster.Enable();
 			//頂点の設定
-			adjuster.SetVertices(vertices);
+			adjuster.SetVertices(vertices, connected);
+			//終了コールバックの設定
+			adjuster.onExit.RemoveAllListeners();
+			adjuster.onExit.AddListener(OnExit);
 		}
 
 		/// <summary>
@@ -102,9 +111,9 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// Makerの終了コールバック
 		/// </summary>
-		public void OnMakeEnd(List<Vector2> vertices) {
-			//Adjusterのテスト
-			EnableAdjuster(vertices);
+		private void OnExit(List<Vector2> vertices) {
+			//イベント発火
+			onExit.Invoke(vertices);
 		}
 
 		#endregion
