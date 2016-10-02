@@ -148,7 +148,6 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\RadialSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\IMonoPoolItem.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\MonoPool.cs" />
-     <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\FuncBox.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpColor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpFloat.cs" />
