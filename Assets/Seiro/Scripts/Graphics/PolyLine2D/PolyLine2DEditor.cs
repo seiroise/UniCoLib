@@ -52,6 +52,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			nowState = null;
 		}
 
+		private void Start() {
+			EnableMaker();
+		}
+
 		#endregion
 
 		#region Function
@@ -114,6 +118,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private void OnExit(List<Vector2> vertices) {
 			//イベント発火
 			onExit.Invoke(vertices);
+			EnableAdjuster(vertices, true);
 		}
 
 		#endregion

@@ -107,9 +107,9 @@ MonoBehaviour:
   innerRadius: 0
   outerRadius: 0.25
   density: 1
-  rangeIndicate: 3
+  rangeIndicate: 0
   radiusIndicate: 0
-  indicateT: 15
+  indicateT: 10
   interactionT: 10
   normalColor: {r: 0.691, g: 0.7180657, b: 1, a: 1}
   overColor: {r: 0, g: 0.08965492, b: 1, a: 1}
@@ -123,14 +123,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
-      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+      Assembly-CSharp, Version=0.1.6119.28369, Culture=neutral, PublicKeyToken=null
   onPointerDown:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
-      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+      Assembly-CSharp, Version=0.1.6119.28369, Culture=neutral, PublicKeyToken=null
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Seiro.Scripts.EventSystems.Interface.Circle.SUICircle+MarkerEvent,
-      Assembly-CSharp, Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+      Assembly-CSharp, Version=0.1.6119.28369, Culture=neutral, PublicKeyToken=null

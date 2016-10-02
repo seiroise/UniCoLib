@@ -80,10 +80,10 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public void SetVertices(List<Vector2> vertices, bool connected = false) {
 			this.connected = connected;
 			mode = Mode.None;
-			//調整モード開始
-			StartAdjustMode();
 			//線の表示
 			renderer.SetVertices(vertices);
+			//調整モード開始
+			StartAdjustMode();
 		}
 
 		/// <summary>
@@ -105,7 +105,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// 頂点リストから削除用マーカーの表示
 		/// </summary>
-		/// <param name="vertices">Vertices.</param>
 		private void IndicateRemoveMarkers(List<Vector2> vertices) {
 			int count = vertices.Count;
 			//頂点マーカー
@@ -119,9 +118,20 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// マーカーの非表示
 		/// </summary>
 		private void HideMarkers() {
-			for(int i = 0; i < markers.Count; ++i) {
+			for(int i = markers.Count - 1; i >= 0; --i) {
 				markers[i].Hide();
+				markers.RemoveAt(i);
 			}
+		}
+
+		/// <summary>
+		/// マーカーの非表示
+		/// </summary>
+		private void HideMarker(SUICircle marker) {
+			if(markers.Contains(marker)) {
+				markers.Remove(marker);
+			}
+			marker.Hide();
 		}
 
 		/// <summary>
@@ -282,15 +292,22 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		private void RemoveVertex(int index) {
 			int count = renderer.GetVertexCount();
-			if(connected && count <= 3) return;
-			if(index == 0) {
-				renderer.Remove(0);
-				if(connected) {
-					renderer.Remove( - 1);
-				}
-			} else {
-				renderer.Remove(index);
+			if(connected && count <= 4) {
+				return;
+			} else if(count == 1) {
+				//最後の頂点を削除
+				Exit();
 			}
+
+			//削除処理
+			if(index == 0 && connected) {
+				Vector2 point = renderer.GetVertex(1);
+				renderer.Change(count - 1, point);
+			}
+			renderer.Remove(index);
+
+			HideMarkers();
+			IndicateRemoveMarkers(renderer.GetVertices());
 		}
 
 		/// <summary>

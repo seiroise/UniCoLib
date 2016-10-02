@@ -2128,13 +2128,11 @@ MonoBehaviour:
   clearKey: 27
   exitType: 1
   exitKey: 13
-  width: 0.1
-  color: {r: 1, g: 1, b: 1, a: 1}
-  onMakeEnd:
+  onExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Seiro.Scripts.Graphics.PolyLine2D.PolyLine2DMaker+makeEndEvent, Assembly-CSharp,
-      Version=0.1.6119.17228, Culture=neutral, PublicKeyToken=null
+    m_TypeName: Seiro.Scripts.Graphics.PolyLine2D.ExitEvent, Assembly-CSharp, Version=0.1.6119.27882,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &747981629
 GameObject:
   m_ObjectHideFlags: 0
@@ -2273,6 +2271,11 @@ MonoBehaviour:
   checker: {fileID: 449832072}
   supporter: {fileID: 501016508}
   cam: {fileID: 747981633}
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Seiro.Scripts.Graphics.PolyLine2D.ExitEvent, Assembly-CSharp, Version=0.1.6119.27882,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &1144443332
 GameObject:
   m_ObjectHideFlags: 0
@@ -2398,13 +2401,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38d0bbbbd81145b6bcaaeb57ebe9f75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0.1
-  color: {r: 1, g: 1, b: 1, a: 1}
   markerPool: {fileID: 2038315518}
   markerParent: {fileID: 2038315516}
   vertex: {r: 0.4627451, g: 0.50980395, b: 1, a: 1}
   midpoint: {r: 1, g: 0.41960785, b: 0.41960785, a: 1}
+  remove: {r: 0.566, g: 1, b: 0, a: 1}
+  removeModeButton: 1
   exitKey: 13
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Seiro.Scripts.Graphics.PolyLine2D.ExitEvent, Assembly-CSharp, Version=0.1.6119.27882,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &2038315518
 MonoBehaviour:
   m_ObjectHideFlags: 0
