@@ -8,10 +8,11 @@ namespace Seiro.Scripts.Utility {
 	/// </summary>
 	public class LerpFloat {
 
-		private float value;	//現在値
+		private float value;    //現在値
 		public float Value { get { return value; } }
 
-		private float target;	//目標値
+		private float target;   //目標値
+		public float Target { get { return target; } }
 
 		private float delta;    //前回との差分(絶対値)
 		public float Delta { get { return delta; } }

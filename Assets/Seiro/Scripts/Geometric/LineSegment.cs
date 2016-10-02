@@ -66,7 +66,7 @@ namespace Seiro.Scripts.Geometric {
 			} else {
 				//それ以外
 				//CCW値の富豪が異なる場合にtrueを返す
-				return ccw1 * ccw2 <= 0f;
+				return ccw1 * ccw2 < 0f;
 			}
 		}
 

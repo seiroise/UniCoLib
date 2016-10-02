@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
-using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Convex;
 using Seiro.Scripts.Graphics.ChainLine;
 
 public class PolygonGameObject : MonoBehaviour {

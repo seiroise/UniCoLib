@@ -2,7 +2,7 @@
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using Seiro.Scripts.Geometric.Polygon;
+using Seiro.Scripts.Geometric.Polygon.Convex;
 
 
 /// <summary>

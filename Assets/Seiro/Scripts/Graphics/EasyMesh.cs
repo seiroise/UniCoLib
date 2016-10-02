@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Seiro.Scripts.Graphics {
 
@@ -18,6 +19,12 @@ namespace Seiro.Scripts.Graphics {
 			verts = new Vector3[0];
 			colors = new Color[0];
 			indices = new int[0];
+		}
+
+		public EasyMesh(Vector3[] verts, Color[] colors, int[] indices) {
+			this.verts = verts;
+			this.colors = colors;
+			this.indices = indices;
 		}
 
 		#endregion
@@ -41,6 +48,53 @@ namespace Seiro.Scripts.Graphics {
 		#endregion
 
 		#region Static Function
+
+		/// <summary>
+		/// 座標リストから二次元ポリラインを作成
+		/// </summary>
+		public static EasyMesh MakePolyLine2D(List<Vector2> points, float width, Color color) {
+
+			//下準備
+			int size = points.Count;
+			Vector3[] verts = new Vector3[size * 4];
+			Color[] colors = new Color[verts.Length];
+			int[] indices = new int[size * 6];
+
+			float halfWidth = width * 0.5f;
+			for(int i = 1; i < size; ++i) {
+				Vector2 a = points[i - 1];
+				Vector2 b = points[i];
+
+				Vector2 vertical = Quaternion.AngleAxis(90f, Vector3.forward) * (a - b).normalized * halfWidth;
+
+				int vIndex = i * 4;
+				verts[vIndex + 0] = a + vertical;
+				verts[vIndex + 1] = a - vertical;
+				verts[vIndex + 2] = b - vertical;
+				verts[vIndex + 3] = b + vertical;
+
+				colors[vIndex + 0] = color;
+				colors[vIndex + 1] = color;
+				colors[vIndex + 2] = color;
+				colors[vIndex + 3] = color;
+
+				int iIndex = i * 6;
+				indices[iIndex + 0] = vIndex + 0;
+				indices[iIndex + 1] = vIndex + 3;
+				indices[iIndex + 2] = vIndex + 1;
+				indices[iIndex + 3] = vIndex + 1;
+				indices[iIndex + 4] = vIndex + 3;
+				indices[iIndex + 5] = vIndex + 2;
+			}
+
+			EasyMesh eMesh = new EasyMesh();
+			eMesh.verts = verts;
+			eMesh.colors = colors;
+			eMesh.indices = indices;
+
+			//頂点間
+			return eMesh;
+		}
 
 		/// <summary>
 		/// 複数のEasyMeshを結合してMeshを作成
