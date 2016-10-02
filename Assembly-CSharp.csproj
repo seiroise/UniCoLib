@@ -118,6 +118,7 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DRenderer.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DSupporter.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\BaseSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\GridSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\LineSegSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\PointSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\RadialSnap.cs" />
