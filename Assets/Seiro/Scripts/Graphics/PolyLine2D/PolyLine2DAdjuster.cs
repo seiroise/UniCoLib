@@ -9,14 +9,14 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 	/// </summary>
 	public class PolyLine2DAdjuster : PolyLine2DEditorComponent {
 
-		public enum MarkerType {
-			Vertex,
-			Midpoint
+		/// <summary>
+		/// 調整モード
+		/// </summary>
+		public enum Mode {
+			None,
+			Adjust,
+			Remove
 		}
-
-		[Header("LineParameter")]
-		public float width = 0.1f;
-		public Color color = Color.white;
 
 		[Header("Marker")]
 		public SUICirclePool markerPool;
@@ -24,10 +24,14 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public Transform markerParent;
 		public Color vertex;
 		public Color midpoint;
+		public Color remove;
 		private const float EPSILON = 0.01f;
 
+		[Header("RemoveMode")]
+		public int removeModeButton = 1;		//削除モードボタン
+
 		[Header("ExitConditions")]
-		public KeyCode exitKey = KeyCode.Return;    //終了キー
+		public KeyCode exitKey = KeyCode.Return;//終了キー
 
 		[Header("Callback")]
 		public ExitEvent onExit;                //終了コールバック
@@ -35,6 +39,9 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		//Module Component
 		private PolyLine2DRenderer renderer;    //描画担当
 		private PolyLine2DSupporter supporter;  //補助担当
+
+		//Mode
+		private Mode mode = Mode.Adjust;		//モード
 
 		//Adjust
 		private List<Vector2> adjustVertices;   //調整頂点群
@@ -72,24 +79,22 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		public void SetVertices(List<Vector2> vertices, bool connected = false) {
 			this.connected = connected;
-			//マーカーの表示
-			IndicateMarkers(vertices);
+			mode = Mode.None;
 			//線の表示
 			renderer.SetVertices(vertices);
+			//調整モード開始
+			StartAdjustMode();
 		}
 
 		/// <summary>
 		/// 頂点リストから調整用マーカーの表示
 		/// </summary>
-		private void IndicateMarkers(List<Vector2> vertices) {
-
+		private void IndicateAdjustMarkers(List<Vector2> vertices) {
 			int count = vertices.Count;
-
 			//中点マーカー
 			for(int i = 0; i < count - 1; ++i) {
 				markers.Add(InstantiateMidpointMarker((i + 1).ToString(), vertices[i], vertices[i + 1]));
 			}
-
 			//頂点マーカー
 			if(connected) --count;
 			for(int i = 0; i < count; ++i) {
@@ -98,31 +103,54 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		}
 
 		/// <summary>
-		/// 調整用マーカーの非表示
+		/// 頂点リストから削除用マーカーの表示
 		/// </summary>
-		private void HideMarkers() {
-			for(int i = 0; i < markers.Count; ++i) {
-				markers[i].Hide();
+		private void IndicateRemoveMarkers(List<Vector2> vertices) {
+			int count = vertices.Count;
+			//頂点マーカー
+			if(connected) --count;
+			for(int i = 0; i < count; ++i) {
+				markers.Add(InstantiateRemoveMarker(i.ToString(), vertices[i]));
 			}
 		}
 
 		/// <summary>
-		/// 調整用マーカーの生成
+		/// マーカーの非表示
 		/// </summary>
-		private SUICircle InstantiateMarker(Vector2 point) {
-			return markerPool.PopItem(point);
+		private void HideMarkers() {
+			for(int i = markers.Count - 1; i >= 0; --i) {
+				markers[i].Hide();
+				markers.RemoveAt(i);
+			}
+		}
+
+		/// <summary>
+		/// マーカーの非表示
+		/// </summary>
+		private void HideMarker(SUICircle marker) {
+			if(markers.Contains(marker)) {
+				markers.Remove(marker);
+			}
+			marker.Hide();
+		}
+
+		/// <summary>
+		/// マーカーの生成
+		/// </summary>
+		private SUICircle InstantiateMarker(string markerName, Vector2 point) {
+			SUICircle marker = markerPool.PopItem(point);
+			marker.name = markerName;
+			marker.onPointerDown.RemoveAllListeners();
+			return marker;
 		}
 
 		/// <summary>
 		/// 頂点調整用マーカーの生成
 		/// </summary>
 		private SUICircle InstantiateVertexMarker(string markerName, Vector2 point) {
-			SUICircle marker = InstantiateMarker(point);
-			marker.name = markerName;
-			//marker.normalColor = vertex;
+			SUICircle marker = InstantiateMarker(markerName, point);
 			marker.SetColor(vertex);
 			marker.Visible();
-			marker.onPointerDown.RemoveAllListeners();
 			marker.onPointerDown.AddListener(OnVertexMarkerDown);
 			return marker;
 		}
@@ -132,13 +160,21 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		private SUICircle InstantiateMidpointMarker(string markerName, Vector2 p1, Vector2 p2) {
 			Vector2 point = (p2 - p1) * 0.5f + p1;
-			SUICircle marker = InstantiateMarker(point);
-			marker.name = markerName;
-			//marker.normalColor = midpoint;
+			SUICircle marker = InstantiateMarker(markerName, point);
 			marker.SetColor(midpoint);
 			marker.Visible();
-			marker.onPointerDown.RemoveAllListeners();
 			marker.onPointerDown.AddListener(OnMidpointMarkerDown);
+			return marker;
+		}
+
+		/// <summary>
+		/// 削除用マーカーの生成
+		/// </summary>
+		private SUICircle InstantiateRemoveMarker(string markerName, Vector2 point) {
+			SUICircle marker = InstantiateMarker(markerName, point);
+			marker.SetColor(remove);
+			marker.Visible();
+			marker.onPointerDown.AddListener(OnRemoveMarkerDown);
 			return marker;
 		}
 
@@ -147,18 +183,35 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// </summary>
 		private void InputCheck() {
 
+			switch(mode) {
+				//調整
+				case Mode.Adjust:
+				if(adjusting) {
+					Vector2 mDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+					if(mDelta.magnitude > EPSILON) {
+						SetNoticeLine();
+					}
+					if(Input.GetMouseButtonUp(0)) {
+						EndVertexMove(editor.GetMousePoint());
+					}
+				
+				} else {
+					if(Input.GetMouseButtonDown(removeModeButton)) {
+						StartRemoveMode();
+					}
+				}
+				break;
+
+				//削除
+				case Mode.Remove:
+				if(Input.GetMouseButtonDown(removeModeButton)) {
+					StartAdjustMode();
+				}
+				break;
+			}
+			//終了
 			if(Input.GetKeyDown(exitKey)) {
 				Exit();
-			}
-
-			if(adjusting) {
-				Vector2 mDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-				if(mDelta.magnitude > EPSILON) {
-					SetNoticeLine();
-				}
-				if(Input.GetMouseButtonUp(0)) {
-					EndVertexMove(editor.GetMousePoint());
-				}
 			}
 		}
 
@@ -222,7 +275,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			}
 
 			renderer.ClearSubLine();
-			IndicateMarkers(adjustVertices);
+			IndicateAdjustMarkers(adjustVertices);
 			adjusting = false;
 		}
 
@@ -235,12 +288,60 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		}
 
 		/// <summary>
+		/// 頂点の削除
+		/// </summary>
+		private void RemoveVertex(int index) {
+			int count = renderer.GetVertexCount();
+			if(connected && count <= 4) {
+				return;
+			} else if(count == 1) {
+				//最後の頂点を削除
+				Exit();
+			}
+
+			//削除処理
+			if(index == 0 && connected) {
+				Vector2 point = renderer.GetVertex(1);
+				renderer.Change(count - 1, point);
+			}
+			renderer.Remove(index);
+
+			HideMarkers();
+			IndicateRemoveMarkers(renderer.GetVertices());
+		}
+
+		/// <summary>
+		/// 調整モード開始
+		/// </summary>
+		private void StartAdjustMode() {
+			if(mode == Mode.Adjust) return;
+			mode = Mode.Adjust;
+			HideMarkers();
+			IndicateAdjustMarkers(renderer.GetVertices());
+		}
+
+		/// <summary>
+		/// 削除モード開始
+		/// </summary>
+		private void StartRemoveMode() {
+			if(mode == Mode.Remove) return;
+			mode = Mode.Remove;
+			HideMarkers();
+			IndicateRemoveMarkers(renderer.GetVertices());
+		}
+
+		/// <summary>
 		/// 終了
 		/// </summary>
 		private void Exit() {
+
 			if(adjusting) {
 				adjusting = false;
 			}
+			if(mode == Mode.Remove) {
+				mode = Mode.Adjust;
+			}
+
 			HideMarkers();
 			//コールバック
 			onExit.Invoke(renderer.GetVertices());
@@ -256,7 +357,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private void OnVertexMarkerDown(GameObject gObj) {
 			int index;
 			if(!int.TryParse(gObj.name, out index)) return;
-			//調整開始
 			StartVertexMove(renderer.GetVertices(), index);
 		}
 
@@ -268,6 +368,16 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			if(!int.TryParse(gObj.name, out index)) return;
 			//頂点の挿入
 			InsertVertex(index, gObj.transform.localPosition);
+		}
+
+		/// <summary>
+		/// 削除マーカーの押下
+		/// </summary>
+		private void OnRemoveMarkerDown(GameObject gObj) {
+			int index;
+			if(!int.TryParse(gObj.name, out index)) return;
+			//頂点の挿入
+			RemoveVertex(index);
 		}
 
 		#endregion

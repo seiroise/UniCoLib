@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Seiro.Scripts.Graphics;
+using Seiro.Scripts.Graphics.PolyLine2D.Snap;
 
 /// <summary>
 /// 補助線の提示、推測

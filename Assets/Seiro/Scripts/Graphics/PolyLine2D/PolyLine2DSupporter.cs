@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Seiro.Scripts.Graphics.PolyLine2D.Snap;
 
 namespace Seiro.Scripts.Graphics.PolyLine2D {
 

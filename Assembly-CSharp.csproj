@@ -45,31 +45,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Common\Collections\Generic\AVLNode.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\AVLTree.ICollection.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\AVLTree.IEnumerable.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\AVLTree.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.ICollection.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.IEnumerable.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTree.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\BinarySearchTreeNode.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\Colour.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\Exceptions\InvalidTreeException.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\Exceptions\ValueNotFoundException.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\Heap.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\HeapType.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\IBinarySearchTree.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\RedBlackNode.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.ICollection.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.IEnumerable.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.MyHelper.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\RedBlackTree.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\SkipList.ICollection.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\SkipList.IEnumerable.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\SkipList.cs" />
-     <Compile Include="Assets\Common\Collections\Generic\SkipListNode.cs" />
-     <Compile Include="Assets\Common\Properties\AssemblyInfo.cs" />
-     <Compile Include="Assets\Common\Resources\Errors.Designer.cs" />
      <Compile Include="Assets\Scripts\Common\ConvexPolygonButton.cs" />
      <Compile Include="Assets\Scripts\Common\DraggableObject.cs" />
      <Compile Include="Assets\Scripts\Common\TransformDetector.cs" />
@@ -95,14 +70,8 @@
      <Compile Include="Assets\Scripts\Geom\Cap.17\Cap17Demo.cs" />
      <Compile Include="Assets\Scripts\LineEditor\AdditionalLineProponent.cs" />
      <Compile Include="Assets\Scripts\LineEditor\LineEditor.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\BaseSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\LineSegSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\PointSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\RadialSnap.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
-     <Compile Include="Assets\Scripts\PolygonEditor\PolygonEditor.cs" />
-     <Compile Include="Assets\Scripts\PolygonMaker\PolygonMaker.cs" />
      <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\Chap1_1_RadialMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\RadialMenu.cs" />
@@ -121,6 +90,7 @@
      <Compile Include="Assets\Seiro\Scripts\Geometric\Line.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\LineSegment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygon.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonEditor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonObject.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Convex\ConvexPolygon.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Convex\ConvexPolygonObject.cs" />
@@ -147,9 +117,12 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DMaker.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DRenderer.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DSupporter.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\BaseSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\LineSegSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\PointSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\RadialSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\IMonoPoolItem.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\MonoPool.cs" />
-     <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\FuncBox.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpColor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpFloat.cs" />

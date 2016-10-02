@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
-using System;
 using System.Collections.Generic;
 using Seiro.Scripts.Geometric;
+using Seiro.Scripts.Graphics.PolyLine2D.Snap;
 
 namespace Seiro.Scripts.Graphics.PolyLine2D {
 
@@ -26,10 +25,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		public ExitType exitType = ExitType.Key;    //終了パターン
 		public KeyCode exitKey = KeyCode.Return;    //終了キー
 		private bool exit = false;                  //終了
-
-		[Header("LineParameter")]
-		public float width = 0.1f;
-		public Color color = Color.white;
 
 		[Header("Callback")]
 		public ExitEvent onExit;                    //終了コールバック
