@@ -95,14 +95,8 @@
      <Compile Include="Assets\Scripts\Geom\Cap.17\Cap17Demo.cs" />
      <Compile Include="Assets\Scripts\LineEditor\AdditionalLineProponent.cs" />
      <Compile Include="Assets\Scripts\LineEditor\LineEditor.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\BaseSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\LineSegSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\PointSnap.cs" />
-     <Compile Include="Assets\Scripts\LineEditor\Snap\RadialSnap.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
-     <Compile Include="Assets\Scripts\PolygonEditor\PolygonEditor.cs" />
-     <Compile Include="Assets\Scripts\PolygonMaker\PolygonMaker.cs" />
      <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\Chap1_1_RadialMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\RadialMenu.cs" />
@@ -121,6 +115,7 @@
      <Compile Include="Assets\Seiro\Scripts\Geometric\Line.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\LineSegment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygon.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonEditor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonObject.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Convex\ConvexPolygon.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Convex\ConvexPolygonObject.cs" />
@@ -147,6 +142,10 @@
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DMaker.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DRenderer.cs" />
      <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\PolyLine2DSupporter.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\BaseSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\LineSegSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\PointSnap.cs" />
+     <Compile Include="Assets\Seiro\Scripts\Graphics\PolyLine2D\Snap\RadialSnap.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\IMonoPoolItem.cs" />
      <Compile Include="Assets\Seiro\Scripts\ObjectPool\MonoPool.cs" />
      <Compile Include="Assets\Seiro\Scripts\UI\Module\UICircle.cs" />
