@@ -95,7 +95,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 追加
 		/// </summary>
 		private void Add() {
-			Vector2 mPoint = editor.GetMousePoint();
+			Vector2 mPoint;
+			if(!editor.GetMousePoint(out mPoint)) return;
 
 			//例外検出
 			if(!editor.checker.AddCheck(renderer.GetVertices(), mPoint)) return;
@@ -170,7 +171,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				return;
 			}
 			//予告線の更新
-			Vector2 mPoint = editor.GetMousePoint();
+			Vector2 mPoint;
+			editor.GetMousePoint(out mPoint);
 			//スナップ
 			Vector2 snapPoint;
 			if(editor.supporter.Snap(mPoint, out snapPoint)) {
@@ -244,7 +246,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private void Exit() {
 			List<Vector2> vertices = renderer.GetVertices();
 			//コールバック
-			onExit.Invoke(vertices.Count == 0 ? null: vertices);
+			onExit.Invoke(vertices.Count == 0 ? null : vertices);
 		}
 
 		#endregion

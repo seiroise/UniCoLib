@@ -72,6 +72,8 @@
      <Compile Include="Assets\Scripts\LineEditor\LineEditor.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap1_PerlinNoiseD1\Chap1_PerlinNoiseD1_Demo.cs" />
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
+     <Compile Include="Assets\Scripts\ShipEditor\PopupText.cs" />
+     <Compile Include="Assets\Scripts\ShipEditor\ShipEditor.cs" />
      <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\Chap1_1_RadialMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Chap1.1 RadialMenu\RadialMenu.cs" />

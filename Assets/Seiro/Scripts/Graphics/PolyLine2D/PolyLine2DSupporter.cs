@@ -140,7 +140,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// デフォルトスナップの追加
 		/// </summary>
 		public void AddDefaultSnap() {
-			snaps.Add(new PrioritySnap(0, new RadialSnap(Vector2.zero, 4, snapForce)));
+			snaps.Add(new PrioritySnap(0, new GridSnap(0.25f, 4, snapForce)));
 		}
 
 		/// <summary>
