@@ -5,34 +5,49 @@ using System.Collections.Generic;
 /// <summary>
 /// 指定したメッシュ(2D)を描画
 /// </summary>
+[ExecuteInEditMode]
 [RequireComponent(typeof(CanvasRenderer), typeof(RectTransform))]
 public class MeshImage : Graphic {
 
-	private Mesh mesh;
+	public Mesh mesh;
+	public bool drawCenter = true;		//中央に描画
+	private CanvasRenderer renderer;
+
+	private void OnEnable() {
+		UpdateGeometry();
+	}
 
 	public void SetMesh(Mesh mesh) {
 		this.mesh = mesh;
-		OnPopulateMesh(new VertexHelper());
+		UpdateGeometry();
 	}
 
-	protected override void OnPopulateMesh(VertexHelper vh) {
+	protected override void UpdateGeometry() {
+		Debug.Log("Update Geometry 0");
+		base.UpdateGeometry();
 		if(mesh == null) return;
-		vh = new VertexHelper(mesh);
-		return;
-		vh.Clear();
-		Vector3[] vertices = mesh.vertices;
-		Color[] colors = mesh.colors;
-
-		//作成準備
-		List<UIVertex> uiVerts = new List<UIVertex>();
-		List<int> uiIndices = new List<int>(mesh.GetIndices(0));
-
-		for(int i = 0; i < vertices.Length; ++i) {
-			UIVertex uiVert = UIVertex.simpleVert;
-			uiVert.position = vertices[i];
-			uiVert.color = colors[i];
+		if(renderer == null) renderer = GetComponent<CanvasRenderer>();
+		Debug.Log("Update Geometry 1");
+		Vector3 offset = Vector3.zero;
+		if(drawCenter) {
+			Mesh temp = new Mesh();
+			//オフセットの計算
+			offset = -mesh.bounds.center;
+			Vector3[] vertices = mesh.vertices;
+			for(int i = 0; i < vertices.Length; ++i) {
+				vertices[i] += offset;
+			}
+			//頂点などの設定
+			temp.vertices = vertices;
+			temp.uv = mesh.uv;
+			temp.colors = mesh.colors;
+			temp.SetIndices(mesh.GetIndices(0), mesh.GetTopology(0), 0);
+			//再計算
+			temp.RecalculateBounds();
+			temp.RecalculateNormals();
+			renderer.SetMesh(temp);
+		} else {
+			renderer.SetMesh(mesh);
 		}
-		//作成
-		vh.AddUIVertexStream(uiVerts, uiIndices);
 	}
 }

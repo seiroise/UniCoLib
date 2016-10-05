@@ -60,17 +60,17 @@ public class ShipEditor : MonoBehaviour {
 		for(int i = 0; i < launchers.Count; ++i) {
 			markerPool.PopItem(launchers[i]).Visible();
 		}
-		//メッシュ化
-		meshImage.SetMesh(polygon.ToEasyMesh(Color.white).ToMesh());
+		//表示
 		polyObj.SetPolygon(polygon);
 		polyObj.onClick.AddListener(OnPolygonClick);
 		polyObjDic.Add(polyObj.gameObject, polyObj);
+		//UIへの表示
+		meshImage.SetMesh(polyObj.EMesh.ToMesh());
 	}
 
 	/// <summary>
 	/// ポリゴンオブジェクトをクリック
 	/// </summary>
-	/// <param name="gObj">G object.</param>
 	private void OnPolygonClick(GameObject gObj) {
 		//とりまテスト
 		if(!polyObjDic.ContainsKey(gObj)) return;
@@ -82,6 +82,10 @@ public class ShipEditor : MonoBehaviour {
 		vertices.Add(vertices[0]);
 		lineEditor.EnableAdjuster(vertices, true);
 	}
+
+	#endregion
+
+	#region UICallback
 
 	/// <summary>
 	/// 描画ボタンのクリック
