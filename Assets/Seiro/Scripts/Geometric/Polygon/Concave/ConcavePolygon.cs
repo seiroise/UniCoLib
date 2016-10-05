@@ -11,35 +11,6 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 	/// </summary>
 	public class ConcavePolygon {
 
-		#region Inner Class
-
-		/// <summary>
-		/// 多角形の頂点
-		/// </summary>
-		public class PolygonVertex {
-
-			public Vector2 point;   //座標
-			public float angle;     //角度
-			public int index;       //番号
-			public bool enabled;    //有効
-
-			#region Constructor
-
-			public PolygonVertex(Vector2 point, float angle, int index) {
-				this.point = point;
-				this.angle = angle;
-				this.index = index;
-				this.enabled = true;
-			}
-
-			public PolygonVertex(PolygonVertex v) : this(v.point, v.angle, v.index) { }
-
-			#endregion
-
-		}
-
-		#endregion
-
 		private List<PolygonVertex> vertices;   //頂点群
 		private int mostFarIndex;               //最も遠い点の番号
 		private float mostFarCross;             //最も遠い点の外積
@@ -71,7 +42,7 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 			float distance = 0f;
 			for(int i = 0; i < size; ++i) {
 				distance = points[i].magnitude;
-				if(distance < maxDistance) {
+				if(distance > maxDistance) {
 					maxDistance = distance;
 					index = i;
 				}
@@ -175,6 +146,13 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 			return new EasyMesh(verts, colors, indices);
 		}
 
+		/// <summary>
+		/// ポリゴン用頂点リストの取得
+		/// </summary>
+		public List<PolygonVertex> GetPolygonVertices() {
+			return new List<PolygonVertex>(vertices);
+		}
+
 		#endregion
 
 		#region Coroutine
@@ -182,7 +160,7 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 		/// <summary>
 		/// 簡易メッシュ変換コルーチン
 		/// </summary>
-		public IEnumerator CoToEasyMesh(Color color, Action<EasyMesh> updateCallback, Action<EasyMesh> endCallback = null, float wait = 0.1f) { 
+		public IEnumerator CoToEasyMesh(Color color, Action<EasyMesh> updateCallback, Action<EasyMesh> endCallback = null, float wait = 0.1f) {
 			int size = vertices.Count;
 			Vector3[] verts = new Vector3[size];
 			Color[] colors = new Color[size];
