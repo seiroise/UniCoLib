@@ -14,6 +14,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D.Snap {
 		private int count;
 		private float deltaAngle;
 		private float[] angles;
+		private float width = 0.1f;
+		private float drawDistance = 100f;
 
 		public RadialSnap(Vector2 point, int count, float snapForce) : base(snapForce) {
 			this.point = point;
@@ -63,22 +65,25 @@ namespace Seiro.Scripts.Graphics.PolyLine2D.Snap {
 			for(int i = 0; i < count; ++i) {
 				Vector2 dir = GeomUtil.DegToVector2(angles[i]);
 				Vector2 verDir = GeomUtil.RotateVector2(dir, 90f);
-				dir *= 100f;
-				verDir *= 0.05f;
+				dir *= drawDistance;
+				verDir *= width * 0.5f;
 
 				int index = i * 4;
 				int indicesIndex = i * 6;
 
+				//頂点
 				vertices[index + 0] = dir + verDir + point;
 				vertices[index + 1] = dir - verDir + point;
 				vertices[index + 2] = -dir - verDir + point;
 				vertices[index + 3] = -dir + verDir + point;
 
+				//色
 				colors[index + 0] = color;
 				colors[index + 1] = color;
 				colors[index + 2] = color;
 				colors[index + 3] = color;
 
+				//インデックス
 				indices[indicesIndex + 0] = index + 0;
 				indices[indicesIndex + 1] = index + 1;
 				indices[indicesIndex + 2] = index + 2;

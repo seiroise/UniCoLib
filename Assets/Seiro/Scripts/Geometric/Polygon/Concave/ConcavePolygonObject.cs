@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System;
 using Seiro.Scripts.Graphics;
+using Seiro.Scripts.EventSystems;
 
 namespace Seiro.Scripts.Geometric.Polygon.Concave {
 
 	/// <summary>
 	/// 凹多角形オブジェクト
 	/// </summary>
-	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-	public class ConcavePolygonObject : MonoBehaviour {
+	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+	public class ConcavePolygonObject : MonoBehaviour, ICollisionEventHandler {
+
+		[Serializable]
+		public class ClickEvent : UnityEvent<GameObject> {};
 
 		private MeshFilter mf;
 		private MeshCollider mc;
@@ -19,6 +24,9 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 
 		private EasyMesh eMesh;
 		public EasyMesh EMesh { get { return eMesh; } }
+
+		[Header("Callback")]
+		public ClickEvent onClick;
 
 		#region UnityEvent
 
@@ -35,27 +43,29 @@ namespace Seiro.Scripts.Geometric.Polygon.Concave {
 		/// 多角形の設定
 		/// </summary>
 		public void SetPolygon(ConcavePolygon polygon) {
-			this.origin = polygon;
-			StartCoroutine(polygon.CoToEasyMesh(Color.white,OnUpdatePolygon, OnEndPolygon));
+			origin = polygon;
+			eMesh = polygon.ToEasyMesh(Color.white);
+			Mesh mesh = eMesh.ToMesh();
+			mf.mesh = mesh;
+			if(mc) {
+				mc.sharedMesh = mesh;
+			}
 		}
 
 		#endregion
 
-		#region Callback
+		#region Interface
 
-		/// <summary>
-		/// ポリゴン生成中の更新コールバック
-		/// </summary>
-		private void OnUpdatePolygon(EasyMesh eMesh) {
-			Mesh mesh = eMesh.ToMesh();
-			mf.mesh = mesh;
-		}
+		public void OnPointerEnter(RaycastHit hit) {}
 
-		/// <summary>
-		/// ポリゴン生成時の終了コールバック
-		/// </summary>
-		private void OnEndPolygon(EasyMesh eMesh) {
-			//mc.sharedMesh = mesh;
+		public void OnPointerExit(RaycastHit hit) {}
+
+		public void OnPointerDown(RaycastHit hit) {}
+
+		public void OnPointerUp(RaycastHit hit) {}
+
+		public void OnPointerClick(RaycastHit hit) {
+			onClick.Invoke(gameObject);
 		}
 
 		#endregion

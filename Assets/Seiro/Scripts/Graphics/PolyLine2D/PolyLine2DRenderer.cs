@@ -98,6 +98,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// 頂点の設定
 		/// </summary>
 		public void SetVertices(List<Vector2> vertices) {
+			if(vertices == null) return;
 			for(int i = 0; i < vertices.Count; ++i) {
 				Add(vertices[i]);
 			}

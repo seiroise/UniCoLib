@@ -192,9 +192,11 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 						SetNoticeLine();
 					}
 					if(Input.GetMouseButtonUp(0)) {
-						EndVertexMove(editor.GetMousePoint());
+						Vector2 point;
+						if(editor.GetMousePoint(out point)) {
+							EndVertexMove(point);
+						}
 					}
-				
 				} else {
 					if(Input.GetMouseButtonDown(removeModeButton)) {
 						StartRemoveMode();
@@ -221,7 +223,8 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private void SetNoticeLine() {
 
 			//マウス座標
-			Vector2 mPoint = editor.GetMousePoint();
+			Vector2 mPoint;
+			editor.GetMousePoint(out mPoint);
 			//スナップ
 			Vector2 snapPoint;
 			if(editor.supporter.Snap(mPoint, out snapPoint)) {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
-using System;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Seiro.Scripts.Utility;
 
@@ -23,11 +22,13 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		private PolyLine2DEditorComponent nowState;
 		private List<PolyLine2DEditorComponent> coms;
 
-		[Header("Camera")]
+		[Header("Input")]
+		public EventSystem uiEventSystem;
 		public Camera cam;
 
 		[Header("Callback")]
-		public ExitEvent onExit;		//MakerとAdjusterの終了イベント
+		public ExitEvent onMakerExit;
+		public ExitEvent onAdjusterExit;
 
 		private PolyLine2D polyLine;	//みんなでこれを編集する
 
@@ -52,10 +53,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			nowState = null;
 		}
 
-		private void Start() {
-			EnableMaker();
-		}
-
 		#endregion
 
 		#region Function
@@ -77,7 +74,7 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			maker.Enable();
 			//終了コールバックの設定
 			maker.onExit.RemoveAllListeners();
-			maker.onExit.AddListener(OnExit);
+			maker.onExit.AddListener(OnMakerExit);
 		}
 
 		/// <summary>
@@ -98,14 +95,30 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 			adjuster.SetVertices(vertices, connected);
 			//終了コールバックの設定
 			adjuster.onExit.RemoveAllListeners();
-			adjuster.onExit.AddListener(OnExit);
+			adjuster.onExit.AddListener(OnAdjusterExit);
 		}
 
 		/// <summary>
-		/// マウス座標の取得
+		/// 状態の無効化
 		/// </summary>
-		public Vector2 GetMousePoint() {
-			return FuncBox.GetMousePosition(cam);
+		private void DisableState() {
+			if(nowState == null) return;
+			nowState.Disable();
+			nowState = null;
+		}
+
+		/// <summary>
+		/// マウス座標の取得。指定したEventStstemに被る場合はfalseを返す
+		/// </summary>
+		public bool GetMousePoint(out Vector2 point) {
+			point = FuncBox.GetMousePosition(cam);
+			if(!uiEventSystem) {
+				return true;
+			} else if(uiEventSystem.IsPointerOverGameObject()) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 
 		#endregion
@@ -115,10 +128,19 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 		/// <summary>
 		/// Makerの終了コールバック
 		/// </summary>
-		private void OnExit(List<Vector2> vertices) {
+		private void OnMakerExit(List<Vector2> vertices) {
+			DisableState();
 			//イベント発火
-			onExit.Invoke(vertices);
-			EnableAdjuster(vertices, true);
+			onMakerExit.Invoke(vertices);
+		}
+
+		/// <summary>
+		/// Adjusterの終了コールバック
+		/// </summary>
+		private void OnAdjusterExit(List<Vector2> vertices) {
+			DisableState();
+			//イベント発火
+			onAdjusterExit.Invoke(vertices);
 		}
 
 		#endregion
