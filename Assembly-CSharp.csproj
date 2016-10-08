@@ -74,8 +74,11 @@
      <Compile Include="Assets\Scripts\PerlinNoise\Chap2_ProcedureDungeon\Chap2_ProcedureDungeon.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\MeshImage.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\Parts\AbstractPartsParser.cs" />
+     <Compile Include="Assets\Scripts\ShipEditor\Parts\Launcher\Launcher.cs" />
+     <Compile Include="Assets\Scripts\ShipEditor\Parts\Launcher\LauncherSpec.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\Parts\List.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\Parts\PartsPolygon.cs" />
+     <Compile Include="Assets\Scripts\ShipEditor\Parts\SpecialPoint.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\PopupText.cs" />
      <Compile Include="Assets\Scripts\ShipEditor\ShipEditor.cs" />
      <Compile Include="Assets\Scripts\UI\Chap.1 UICircle\Chap1_CircleUI_Demo.cs" />
@@ -87,16 +90,13 @@
      <Compile Include="Assets\Seiro\Scripts\EventSystems\Interface\Circle\SUICircle.cs" />
      <Compile Include="Assets\Seiro\Scripts\EventSystems\Interface\Circle\SUICirclePool.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\PseudoHalfPlaneGenerator.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagram.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiDiagramGenerator.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\VoronoiSite.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\WaitedVoronoiDiagramGenerator.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Diagram\Voronoi\WaitedVoronoiSite.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\GeomUtil.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Line.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\LineSegment.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygon.cs" />
-     <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonEditor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\ConcavePolygonObject.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Concave\PolygonVertex.cs" />
      <Compile Include="Assets\Seiro\Scripts\Geometric\Polygon\Convex\ConvexPolygon.cs" />
@@ -135,6 +135,7 @@
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpColor.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpFloat.cs" />
      <Compile Include="Assets\Seiro\Scripts\Utility\LerpSpriteColor.cs" />
+     <None Include="Assets\Seiro\Readme.txt" />
      <None Include="Assets\StreamingAssets\positions.txt" />
      <None Include="Assets\StreamingAssets\pos0x03d3_packets.txt" />
      <None Include="Assets\StreamingAssets\positions0_1.txt" />

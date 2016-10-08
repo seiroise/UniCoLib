@@ -5,6 +5,7 @@ using Seiro.Scripts.Graphics.PolyLine2D;
 using Seiro.Scripts.Geometric.Polygon.Concave;
 using Seiro.Scripts.Graphics;
 using Seiro.Scripts.EventSystems.Interface.Circle;
+using Scripts.ShipEditor.Parts.Launcher;
 
 /// <summary>
 /// 機体エディタ
@@ -23,7 +24,6 @@ public class ShipEditor : MonoBehaviour {
 
 	[Header("UI")]
 	public Button drawButton;
-	public MeshImage meshImage;
 
 	[Header("Renderer")]
 	public MeshFilter mf;
@@ -56,16 +56,14 @@ public class ShipEditor : MonoBehaviour {
 		ConcavePolygon polygon = new ConcavePolygon(vertices);
 		//ランチャーの解析
 		PartsPolygon pPoly = new PartsPolygon(polygon);
-		List<Vector2> launchers = pPoly.ParseLauncher();
+		List<Launcher> launchers = pPoly.ParseLauncher();
 		for(int i = 0; i < launchers.Count; ++i) {
-			markerPool.PopItem(launchers[i]).Visible();
+			markerPool.PopItem(launchers[i].point).Visible();
 		}
 		//表示
 		polyObj.SetPolygon(polygon);
 		polyObj.onClick.AddListener(OnPolygonClick);
 		polyObjDic.Add(polyObj.gameObject, polyObj);
-		//UIへの表示
-		meshImage.SetMesh(polyObj.EMesh.ToMesh());
 	}
 
 	/// <summary>
@@ -80,10 +78,12 @@ public class ShipEditor : MonoBehaviour {
 			vertices.Add(e);
 		}
 		vertices.Add(vertices[0]);
+
 		lineEditor.EnableAdjuster(vertices, true);
 	}
 
 	#endregion
+
 
 	#region UICallback
 

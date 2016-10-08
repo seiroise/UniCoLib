@@ -201,38 +201,6 @@ namespace Seiro.Scripts.Graphics.PolyLine2D {
 				}
 			}
 
-			//頂点依存スナップの追加
-			if(count >= 3) {
-				//平行線スナップの追加
-				Vector2 p1, p2, p3;
-				Vector2 dir;
-				p1 = vertices[count - 3];
-				p2 = vertices[count - 2];
-				p3 = vertices[count - 1];
-
-				dir = (p2 - p1).normalized * 100f;
-				supporter.AddSnap(0, new LineSegSnap(p3 + dir, p3 - dir, snapForce));
-				Line lineA = Line.FromPoints(p3, p3 + dir);
-
-				dir = (p3 - p2).normalized * 100f;
-				supporter.AddSnap(0, new LineSegSnap(p1 + dir, p1 - dir, snapForce));
-				Line lineB = Line.FromPoints(p1, p1 + dir);
-
-				Vector2 intersection = Vector2.zero;
-				if(lineA.GetIntersectionPoint(lineB, ref intersection)) {
-					supporter.AddSnap(5, new PointSnap(intersection, snapForce));
-				}
-			} else if(count == 2) {
-				//垂直線スナップの追加
-				Vector2 p1, p2;
-				Vector2 vertical;
-				p1 = vertices[count - 1];
-				p2 = vertices[count - 2];
-				vertical = (p1 - p2).normalized * 100f;
-				vertical = GeomUtil.RotateVector2(vertical, 90f);
-				supporter.AddSnap(0, new LineSegSnap(p1 + vertical, p1 - vertical, snapForce));
-			}
-
 			//デフォルトスナップの追加
 			supporter.AddDefaultSnap();
 

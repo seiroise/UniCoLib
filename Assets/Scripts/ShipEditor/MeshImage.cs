@@ -23,11 +23,9 @@ public class MeshImage : Graphic {
 	}
 
 	protected override void UpdateGeometry() {
-		Debug.Log("Update Geometry 0");
 		base.UpdateGeometry();
 		if(mesh == null) return;
 		if(renderer == null) renderer = GetComponent<CanvasRenderer>();
-		Debug.Log("Update Geometry 1");
 		Vector3 offset = Vector3.zero;
 		if(drawCenter) {
 			Mesh temp = new Mesh();
