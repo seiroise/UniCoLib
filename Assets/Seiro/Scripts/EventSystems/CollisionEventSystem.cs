@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 namespace Seiro.Scripts.EventSystems {
@@ -16,6 +17,9 @@ namespace Seiro.Scripts.EventSystems {
 		[SerializeField]
 		private int mouseButton = 0;
 		private Collider downCollider;	//押した時のコライダ
+
+		//その他のEventSystems
+		public EventSystem priorityEventSystem;	//優先されるEventSystem
 
 		//その他
 		private Collider prevCollider;
@@ -43,6 +47,12 @@ namespace Seiro.Scripts.EventSystems {
 		/// 重なり確認
 		/// </summary>
 		private void CheckHighlight(Vector2 screenPos) {
+			//優位なEventSystemの重なり確認
+			if(priorityEventSystem) {
+				if(priorityEventSystem.IsPointerOverGameObject()) {
+					
+				}
+			}	
 			Ray ray = camera.ScreenPointToRay(screenPos);
 			RaycastHit hit;
 			if(Physics.Raycast(ray, out hit, 100f)) {
